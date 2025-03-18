@@ -389,13 +389,14 @@ footer {
 
 .product-box{
     width: 400px;
-    height: 250px;
+    height: 350px;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
     font-weight: bold;
     border-radius:10px;
     flex: 0 0 400px;
+    overflow: hidden;
     align-items:center;
     padding: 1rem;
 }
@@ -423,7 +424,7 @@ footer {
 
 .product-box1{
     width: 400px;
-    height: 250px;
+    height: 350px;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
