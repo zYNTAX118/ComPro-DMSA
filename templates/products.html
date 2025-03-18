@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="product-content1" id="ps1">
+  <div class="product-content1">
     <div class="parallax" ></div>
     <div class="ccc-box">
-      <div class="product-box">
+      <div class="product-box" id="ps1">
         <a><img src="{{ url_for('static', filename='images/1C.png') }}" alt="Product1"></a>
         <p><br>CCC Controller S3++</p>
       </div>
@@ -13,10 +13,10 @@
       </div>
   </div>
 
-  <div class="product-content1" id="ps2">
+  <div class="product-content1">
     <div class="parallax1"></div>
     <div class="remosa-box">
-      <div class="product-box1">
+      <div class="product-box1" id="ps2">
         <a><img src="{{ url_for('static', filename='images/IMI-REMOSA/1.png') }}" alt="Product1"></a>
         <p><br></p>
       </div>
