@@ -13,7 +13,7 @@ body, html {
 
 @font-face {
     font-family: 'Futura';
-    src: url('/static/fonts/Futura Book font.ttf') format('truetype');
+    src: url('/static/fonts/Futura-Book-font.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
