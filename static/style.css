@@ -389,19 +389,20 @@ footer {
 
 .product-box{
     width: 400px;
-    height: 700px;
+    height: 250px;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
     font-weight: bold;
     border-radius:10px;
+    flex: 0 0 400px;
     align-items:center;
     padding: 1rem;
 }
 
 .product-box:hover{
     width: 400px;
-    height: 400px;
+    height: 700px;
     background-color: #1338BE;
     color: white;
     font-family: "Futura";
@@ -422,7 +423,7 @@ footer {
 
 .product-box1{
     width: 400px;
-    height: 400px;
+    height: 250px;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
@@ -435,7 +436,7 @@ footer {
 
 .product-box1:hover{
     width: 400px;
-    height: 400px;
+    height: 700px;
     background-color:#45b6fe;
     color: white;
     font-family: "Futura";
