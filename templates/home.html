@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+  <!-- Page Heading -->
+  <div class="home-content" id="section1">
+    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+  <!-- Indicators -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+
+  <!-- Slides -->
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{{ url_for('static', filename='images/slider/1.jpg') }}" class="d-block w-100" alt="Slide 1">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Welcome to<br>PT. Dwi Mandiri Sejahtera Agung</h5>
+        <p>Industrial-supplier</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='images/slider/2.jpg') }}" class="d-block w-100" alt="Slide 2">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>We are committed to provide our products and services<br>at right the place and at the right time</h5>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='images/slider/3.jpg') }}" class="d-block w-100" alt="Slide 3">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Customers’ trust and satisfaction in a sustainable and efficient manner<br>is our priority</h5>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+  </div>
+
+<div class="home-content2" id="section2">
+  <!-- Heading at the top -->
+  <h1 class="product-title">OUR PRODUCTS</h1>
+
+  <!-- Wrapper for product buttons + 'View More' -->
+  <div class="product-buttons">
+    <ul class="product-button-list">
+      <li>
+        <a href="#ps1" class="product-button">
+          <img src="{{ url_for('static', filename='images/1.png') }}">
+        </a>
+      </li>
+      <li>
+        <a href="#" class="product-button">
+          <img src="{{ url_for('static', filename='images/1Z.png') }}">
+        </a>
+      </li>
+      <li>
+        <a href="#" class="product-button">
+          <img src="{{ url_for('static', filename='images/2C.png') }}">
+        </a>
+      </li>
+      <li>
+        <a href="#" class="product-button">
+          <img src="{{ url_for('static', filename='images/1C.png') }}">
+        </a>
+      </li>
+    </ul>
+
+    <div class="viewmore-button">
+      <a href="{{ url_for('products') }}" class="viewmore-text">View More &rarr;</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+  <style>
+      div.text_box{
+      max-width: 1200px;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: black;
+      padding: 14px 25px;
+      justify-content:center;
+      display: inline-block;
+      border-radius: 25px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+      transition: 1s;
+      overflow: visible;
+    }
+    div.text_box:hover{
+      transform:scale(1.005);
+
+    }
+    .about_list{
+      text-align: left;
+      line-height: 25px;
+    }
+    .about_content{
+      text-align: left;
+      line-height: 25px;
+    }
+  </style>
+  <div class="text_box">
+    <br>
+    <h1 style="font-weight:bold;, font-family:'Futura';">About Us</h1>
+    <p class="about_content">
+      It began in 1998 when PT. DMSA was first established and registered with its Office In Jakarta
+      Indonesia at Jl. Lodan Raya No.2, Komplek Lodan Center Blok L No.7, Jakarta 14430.
+      Over the past decades PT. DMSA has accumulated a neat and healthy market trust. We have
+      been providing support and services to the National Oil and Gas Company in Indonesia (PT.
+      Pertamina Persero). We supply mostly parts for Turn Around, Services and some other
+      Maintenance Support for Emergency Calls.
+      All our Principals are those that work with in a professional , ethical, competitive and cost
+      efective manner consistent with policies, procedures and business objectives. They all
+      produce goods and services from financial stable, technically qualified and reliable sources.
+      <br></br>
+      Since 1999, PT. DMSA has grown gradually mainly providing services for the National Oil and
+      Gas Company. Vendor Registered No. 2186 in PT. Kilang Pertamina International (PT. KPI) and
+      Pertamina Upstream.
+    </p>
+    <ul class="about_list">
+      <li>Thomassen Pumping Unit : PT. DMSA began as a single distributor for the Pumping Unit
+        and Parts for most of the Install Base in Indonesia since 1999 until present time.</li>
+      <li>WIKA Gayesco is one of the leading manufacturers for Pressure Gauges, Temperature
+        Gauges, Thermocouples and Transmitters. PT. DMSA achieved many excellent awards for
+        the prompt delivery and services throughout the years since 2009 until present time.</li>
+      <li>Schneider Electric: PT. DMSA started as a distributor for Field Devices such as Differential
+        Pressure Transmitters and Positioners under the name of Foxboro Invensys before it was
+        later acquired by Schneider Electric. Our Install Base are mostly in Pertamina Refineries.</li>
+      <li>CCC (Compressor Control Corporation) : PT. DMSA were appointed as the Channel Partner
+          in 2019. We had major achievement in Cilacap RDMP RFCC Project and Balikpapan RDMP
+          Project as our largest Install Base in Indonesia. Our Install Base spreads across Oil and Gas
+          Industries, Petrochemical and Fertlizer Industries.</li>
+      <li>PT. DMSA obtained the agency for the Slide Valve Business in 2022 and started with the
+          Turn Around operation in 2024 for PT. Kilang Pertamina Internasional for parts and
+          services of Body Assy., HPCU, Actuator and Check Valve.</li>
+    </ul>
+  </div>
+{% endblock %}
