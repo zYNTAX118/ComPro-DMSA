@@ -388,16 +388,15 @@ footer {
 }
 
 .product-box{
-    display: flex;
     width: 400px;
     height: auto;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
     font-weight: bold;
-    flex: 0 0 400px;
     border-radius:10px;
     align-items:center;
+    padding: 1rem;
 }
 
 .product-box:hover{
