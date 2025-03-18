@@ -7,7 +7,7 @@ import logging
 load_dotenv()
 
 app=Flask(__name__)
-logging.basicConfig(filename='app.log', level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 app.config['DEBUG']=False
 app.config['SECRET_KEY']=os.environ.get('SECRET_KEY', os.urandom(32))
 app.config['SESSION_COOKIE_SECURE']=True
