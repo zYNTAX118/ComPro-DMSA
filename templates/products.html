@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
   <div class="product-content1">
-    <div class="parallax" ></div>
+    <div class="parallax"></div>
     <div class="ccc-box">
       <div class="product-box" id="ps1">
         <a><img src="{{ url_for('static', filename='images/1C.png') }}" alt="Product1"></a>
@@ -92,8 +92,25 @@
         <a><img src="{{ url_for('static', filename='images/IMIZJ/9Z.png') }}" alt="Product1"></a>
         <p><br></p>
       </div>
-
     </div>
   </div>
+
+  <div class="product-content1">
+    <div class="parallax2"></div>
+    <div class="wika-box">
+      <div class="product-box2" id="ps3">
+        <a><img src="{{ url_for('static', filename='images/wika/1W.png') }}" alt="Product1"></a>
+        <p><br></p>
+      </div>
+      <div class="product-box2">
+        <a><img src="{{ url_for('static', filename='images/wika/2W.png') }}" alt="Product1"></a>
+        <p><br></p>
+      </div>
+      <div class="product-box2">
+        <a><img src="{{ url_for('static', filename='images/wika/3W.png') }}" alt="Product1"></a>
+        <p><br></p>
+      </div>
+  </div>
+
 
 {% endblock %}
