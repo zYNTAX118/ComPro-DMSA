@@ -6,6 +6,7 @@ A Flask Powered Website showcasing company profile & products
 - [Project Overview](#project-overview)
 - [Tech Stack](#tech-stack)
 - [Screenshots](#screenshots)
+- [Demo link](#demo-link)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
@@ -38,6 +39,9 @@ This project demonstrates a small-scale landing page using the [Flask](https://f
 ![Screenshot Description](static/images/screenshots/2.png)
 ![Screenshot Description](static/images/screenshots/3.png)
 ![Screenshot Description](static/images/screenshots/4.png)
+
+## Demo link
+****
 
 ## Roadmap
 1. **Front-end**
