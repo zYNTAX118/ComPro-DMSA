@@ -44,6 +44,7 @@ This project demonstrates a small-scale web application using the [Flask](https:
     - Enhancing user experience by implementing minimalist UI 
     - Improving visuals and readability by choosing the right image files
     - Improving animations
+    - Improving mobile UI
     - adding videos and 3D overview of products
 
 2. **Back-End**
