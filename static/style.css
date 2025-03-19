@@ -358,7 +358,7 @@ footer {
 }
 
 .parallax2{
-  background-image:url('/static/images/slider/4.JPG');
+  background-image:url('/static/images/slider/4.jpg');
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
