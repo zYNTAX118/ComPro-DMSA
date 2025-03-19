@@ -41,7 +41,7 @@ This project demonstrates a small-scale landing page using the [Flask](https://f
 ![Screenshot Description](static/images/screenshots/4.png)
 
 ## Demo link
-****
+**https://com-pro-dmsa-zyntax118s-projects.vercel.app/**
 
 ## Roadmap
 1. **Front-end**
