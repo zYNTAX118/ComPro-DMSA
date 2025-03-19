@@ -14,7 +14,7 @@ A Flask Powered Website showcasing company profile & products
 
 ## Project Overview
 
-This project demonstrates a small-scale web application using the [Flask](https://flask.palletsprojects.com/) micro-framework for Python. It serves static pages and processes simple data on the server side, while using standard HTML and CSS for the front end. 
+This project demonstrates a small-scale landing page using the [Flask](https://flask.palletsprojects.com/) micro-framework for Python. It serves static pages and processes simple data on the server side, while using standard HTML and CSS for the front end. 
 
 ---
 
