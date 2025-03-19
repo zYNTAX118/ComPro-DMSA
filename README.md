@@ -5,9 +5,6 @@ A Flask Powered Website showcasing company profile & products
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Tech Stack](#tech-stack)
-- [Folder Structure](#folder-structure)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
 - [Screenshots](#screenshots)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -17,7 +14,7 @@ A Flask Powered Website showcasing company profile & products
 
 ## Project Overview
 
-This project demonstrates how to build a small-scale web application using the [Flask](https://flask.palletsprojects.com/) micro-framework for Python. It serves static pages and processes simple data on the server side, while using standard HTML and CSS for the front end. 
+This project demonstrates a small-scale web application using the [Flask](https://flask.palletsprojects.com/) micro-framework for Python. It serves static pages and processes simple data on the server side, while using standard HTML and CSS for the front end. 
 
 ---
 
@@ -36,26 +33,27 @@ This project demonstrates how to build a small-scale web application using the [
 - **static/**: Holds all static files—CSS, JavaScript, images.  
 - **templates/**: Where you store your HTML files that might use Jinja2 templating features.
 
-## Getting Started
+## Screenshots
+![Screenshot Description](static/images/screenshots/1.png)
+![Screenshot Description](static/images/screenshots/2.png)
+![Screenshot Description](static/images/screenshots/3.png)
+![Screenshot Description](static/images/screenshots/4.png)
 
-### Prerequisites
-- **Python 3.8+** (any recent 3.x version should work)
-- *(Optional but recommended)* A virtual environment tool like `venv` or `conda`
+## Roadmap
+1. **Front-end**
+    - Enhancing user experience by implementing minimalist UI 
+    - Improving visuals and readability by choosing the right image files
+    - Improving animations
+    - adding videos and 3D overview of products
 
-### Installation
+2. **Back-End**
+    - Implementing user input in contacts to give notifications through emails
 
-1. **Clone this repository**:
-   ```bash
-   git clone https://github.com/YourUsername/MyFlaskWebsite.git
-   cd MyFlaskWebsite
+## Contributing
+Currently, this repository is for demonstration purposes only. We are **not** accepting external contributions.
 
-2. **Create a virtual environment (Recommended)**:
-    ```bash
-    python -m venv venv
-    source venv/bin/activate   # On Linux/Mac
-    # or
-    venv\Scripts\activate      # On Windows
-3. **Install the dependencies**
-    ```bash
-    pip install -r requirements.txt
+## License
 
+All rights reserved. This repository is publicly visible for demonstration 
+and reference purposes only. No reuse, modification, or distribution of 
+this code is allowed without explicit permission.
