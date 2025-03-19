@@ -3,6 +3,7 @@ import secrets
 from flask import Flask, request, render_template, abort
 from dotenv import load_dotenv
 import logging
+import smtplib
 
 load_dotenv()
 
@@ -20,14 +21,9 @@ api_token=os.environ.get('API_TOKEN', secrets.token_hex(32))
 def home():
     return render_template('home.html')
 
-
 @app.route('/about')
 def about():
     return render_template('about.html')
-@app.route('/mission')
-def mission():
-    return render_template('mission.html')
-
 
 @app.route('/products')
 def products():

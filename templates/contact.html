@@ -1,15 +1,115 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Contact Us</h1>
-  <p>You can reach us by phone, email, or use the form below (if you implement one).</p>
+<style>
+  /* Container styling for consistent page layout */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-  <!-- Placeholder contact form (requires a POST route if you want to handle submissions) -->
-  <!--
-  <form method="POST" action="{{ url_for('contact') }}">
-    <input type="text" name="name" placeholder="Your Name" required><br><br>
-    <input type="email" name="email" placeholder="Your Email" required><br><br>
-    <textarea name="message" placeholder="Message" required></textarea><br><br>
-    <button type="submit">Send</button>
-  </form>
-  -->
+/* Basic header styling */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #333;
+  color: #fff;
+}
+
+.header-container nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.header-container nav ul li {
+  margin-left: 20px;
+}
+
+.header-container nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Highlight the active page */
+.header-container nav ul li a.active {
+  border-bottom: 2px solid #4CAF50;
+}
+
+/* Contact form styling */
+.contact-form {
+  background: #fff;
+  padding: 25px;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-top: 20px;
+}
+
+.contact-form .form-group {
+  margin-bottom: 15px;
+}
+
+.contact-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.contact-form .btn {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.contact-form .btn:hover {
+  background-color: #45a049;
+}
+
+</style>
+<div class="container">
+      <h2>Contact Us</h2>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="flash-messages">
+            {% for message in messages %}
+              <p>{{ message }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('contact') }}" class="contact-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Your email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
 {% endblock %}

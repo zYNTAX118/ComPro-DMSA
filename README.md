@@ -48,7 +48,7 @@ This project demonstrates a small-scale landing page using the [Flask](https://f
     - Enhancing user experience by implementing minimalist UI 
     - Improving visuals and readability by choosing the right image files
     - Improving animations
-    - Improving mobile UI
+    - Improving mobile UI and scalability
     - adding videos and 3D overview of products
 
 2. **Back-End**
