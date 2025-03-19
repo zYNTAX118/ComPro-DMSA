@@ -18,7 +18,7 @@ app.config['SESSION_COOKIE_SAMESITE']='Lax'
 api_token=os.environ.get('API_TOKEN', secrets.token_hex(32))
 
 MAIL_SERVER = os.getenv("MAIL_SERVER")
-MAIL_PORT = int(os.getenv("MAIL_PORT"))
+MAIL_PORT = int(os.getenv("MAIL_PORT", "587"))
 MAIL_USERNAME = os.getenv("MAIL_USERNAME")
 MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 
