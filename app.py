@@ -63,6 +63,7 @@ def send_email(to_email, subject, body):
     message = MIMEText(body)
     message['to'] = to_email
     message['subject'] = subject
+    message['From'] = "senderdmsa@gmail.com"
 
     raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
 
@@ -106,7 +107,7 @@ def contact():
             user_body = (
                 f"Dear {name},\n\n"
                 "Thank you for reaching out to us. We have received your message "
-                "and will get back to you shortly.\nFor further inquiries please contact admin@dmsa.co.id since this is an automated message"
+                "and will get back to you shortly.\n\nFor further inquiries please contact admin@dmsa.co.id since this is an automated message"
                 "\n\nBest regards,\nPT. DMSA Team"
             )
             send_email(email, user_subject, user_body)

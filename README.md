@@ -52,7 +52,7 @@ This project demonstrates a small-scale landing page using the [Flask](https://f
     - adding videos and 3D overview of products
 
 2. **Back-End**
-    - Implementing user input in contacts to give notifications through emails
+    - Implementing user input in contacts to give notifications through emails(added)
 
 ## Contributing
 Currently, this repository is for demonstration purposes only. We are **not** accepting external contributions.
