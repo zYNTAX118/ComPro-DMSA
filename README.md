@@ -15,7 +15,10 @@ A Flask Powered Website showcasing company profile & products
 
 ## Project Overview
 
-This project demonstrates a small-scale landing page using the [Flask](https://flask.palletsprojects.com/) micro-framework for Python. It serves static pages and processes simple data on the server side, while using standard HTML and CSS for the front end. 
+This project demonstrates a small-scale landing page 
+using the [Flask](https://flask.palletsprojects.com/) micro-framework for Python. 
+It serves static pages and processes simple data such as user input for contact form on the server side, 
+while using standard HTML and CSS for the front end. 
 
 ---
 
@@ -33,16 +36,16 @@ This project demonstrates a small-scale landing page using the [Flask](https://f
 - **requirements.txt**: Lists all necessary Python packages (Flask, etc.).  
 - **static/**: Holds all static files—CSS, JavaScript, images.  
 - **templates/**: Where you store your HTML files that might use Jinja2 templating features.
-
+---
 ## Screenshots
 ![Screenshot Description](static/images/screenshots/1.png)
 ![Screenshot Description](static/images/screenshots/2.png)
 ![Screenshot Description](static/images/screenshots/3.png)
 ![Screenshot Description](static/images/screenshots/4.png)
-
+---
 ## Demo link
 **https://com-pro-dmsa-zyntax118s-projects.vercel.app/**
-
+---
 ## Roadmap
 1. **Front-end**
     - Enhancing user experience by implementing minimalist UI 
@@ -53,7 +56,7 @@ This project demonstrates a small-scale landing page using the [Flask](https://f
 
 2. **Back-End**
     - Implementing user input in contacts to give notifications through emails(added)
-
+---
 ## Contributing
 Currently, this repository is for demonstration purposes only. We are **not** accepting external contributions.
 
