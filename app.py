@@ -27,7 +27,7 @@ app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@example.com")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "senderdmsa@gmail.com")
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
@@ -106,7 +106,8 @@ def contact():
             user_body = (
                 f"Dear {name},\n\n"
                 "Thank you for reaching out to us. We have received your message "
-                "and will get back to you shortly.\n\nBest regards,\nPT. DMSA Team"
+                "and will get back to you shortly.\nFor further inquiries please contact admin@dmsa.co.id since this is an automated message"
+                "\n\nBest regards,\nPT. DMSA Team"
             )
             send_email(email, user_subject, user_body)
 
