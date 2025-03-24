@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from email.mime.text import MIMEText
+from google.auth.transport.requests import Request
 
 # Load .env (for local dev). On Vercel, environment variables are provided automatically.
 load_dotenv()
@@ -29,7 +30,11 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "senderdmsa@gmail.com")
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+SCOPES = ['https://www.googleapis.com/auth/gmail.send',
+          'https://www.googleapis.com/auth/spreadsheets']
+
+SPREADSHEET_ID = '1Q2V7YUX7koqdh88fMp0MMe_34g4t9bkM_R_nk6xJEeo'
+RANGE_NAME = 'Sheet1!A:D'
 
 def get_credentials():
     """
