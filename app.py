@@ -25,6 +25,8 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 # Global thread pool for sending emails concurrently.
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
+# Cache for the Gmail API service
+gmail_service = None
 
 
 def get_credentials():
@@ -46,12 +48,22 @@ def get_credentials():
             raise RuntimeError("No credentials found. Run oauth.py locally or set TOKEN_JSON env.")
 
 
+def get_gmail_service():
+    """
+    Returns a cached instance of the Gmail API service.
+    """
+    global gmail_service
+    if gmail_service is None:
+        creds = get_credentials()
+        gmail_service = build('gmail', 'v1', credentials=creds)
+    return gmail_service
+
+
 def send_email(to_email, subject, body):
     """
     Sends an email using the Gmail API.
     """
-    creds = get_credentials()
-    service = build('gmail', 'v1', credentials=creds)
+    service = get_gmail_service()
     message = MIMEText(body)
     message['to'] = to_email
     message['subject'] = subject
@@ -109,17 +121,10 @@ def contact():
                 "Best regards,\nPT. DMSA Team"
             )
 
-            # Send emails concurrently.
-            future_admin = executor.submit(send_email, ADMIN_EMAIL, admin_subject, admin_body)
-            future_user = executor.submit(send_email, email, user_subject, user_body)
-            # Wait for both email tasks up to 2 seconds.
-            done, pending = concurrent.futures.wait(
-                [future_admin, future_user],
-                timeout=2,
-                return_when=concurrent.futures.ALL_COMPLETED
-            )
-            if pending:
-                logging.warning("Email sending tasks did not finish within 2 seconds.")
+            # Offload email sending without waiting for completion.
+            executor.submit(send_email, ADMIN_EMAIL, admin_subject, admin_body)
+            executor.submit(send_email, email, user_subject, user_body)
+
             flash("Message sent successfully! A confirmation email has been sent.")
         except Exception as e:
             logging.error(f"Error sending message: {e}")
