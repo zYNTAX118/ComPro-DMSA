@@ -8,9 +8,6 @@ from secrets import token_hex
 
 from flask import Flask, request, render_template, flash, redirect, url_for
 from dotenv import load_dotenv
-from database import ContactSubmission, SessionLocal
-
-
 
 # Google API imports
 from googleapiclient.discovery import build
@@ -22,7 +19,6 @@ from google.auth.transport.requests import Request
 load_dotenv()
 
 app = Flask(__name__)
-
 logging.basicConfig(level=logging.INFO)
 
 # Flask config
@@ -33,23 +29,19 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "senderdmsa@gmail.com")
-
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-
 
 def get_credentials():
     """
     Loads OAuth2 credentials from an environment variable or from a local token.json file.
     """
-    token_json_env = os.getenv("TOKEN_JSON")  # set this in production (Vercel)
+    token_json_env = os.getenv("TOKEN_JSON")  # Set this in production (Vercel)
     if token_json_env:
         # Parse from environment variable
         creds_info = json.loads(token_json_env)
         creds = Credentials.from_authorized_user_info(creds_info, SCOPES)
         if not creds or not creds.valid:
-            # Attempt refresh if token is expired but we have a refresh token
             if creds and creds.expired and creds.refresh_token:
-                from google.auth.transport.requests import Request
                 creds.refresh(Request())
         return creds
     else:
@@ -72,12 +64,14 @@ def send_email(to_email, subject, body):
     message['From'] = "senderdmsa@gmail.com"
 
     raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
     sent_message = service.users().messages().send(
         userId='me',
         body={'raw': raw_message}
     ).execute()
     logging.info(f"Email sent to {to_email}. Message ID: {sent_message['id']}")
+
+# Import the MongoDB collection from our database module.
+from database import contact_submissions
 
 @app.route('/')
 def home():
@@ -103,21 +97,21 @@ def contact():
             return redirect(url_for('contact'))
 
         try:
-            # Commit to database
-            db_session = SessionLocal()
-            new_submission = ContactSubmission(
-                name=name,
-                email=email,
-                message=message
-            )
-            db_session.add(new_submission)
-            db_session.commit()
-            # Admin notification
+            # Insert the submission into MongoDB.
+            submission = {
+                "name": name,
+                "email": email,
+                "message": message
+            }
+            result = contact_submissions.insert_one(submission)
+            logging.info(f"Inserted submission with id: {result.inserted_id}")
+
+            # Admin notification email.
             admin_subject = "New Contact Form Submission"
             admin_body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
             send_email(ADMIN_EMAIL, admin_subject, admin_body)
 
-            # User confirmation
+            # User confirmation email.
             user_subject = "Thank you for contacting PT. DMSA"
             user_body = (
                 f"Dear {name},\n\n"
@@ -136,5 +130,5 @@ def contact():
     return render_template('contact.html')
 
 if __name__ == '__main__':
-    # For local testing only
+    # For local testing only.
     app.run(debug=False, host='0.0.0.0', port=5000)
