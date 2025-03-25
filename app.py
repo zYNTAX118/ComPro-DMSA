@@ -6,7 +6,6 @@ import json
 
 
 from flask import Flask, request, render_template, flash, redirect, url_for
-from dotenv import load_dotenv
 
 # Google API imports
 from googleapiclient.discovery import build
@@ -14,8 +13,7 @@ from google.oauth2.credentials import Credentials
 from email.mime.text import MIMEText
 from google.auth.transport.requests import Request
 
-# Load .env (for local dev). On Vercel, environment variables are provided automatically.
-load_dotenv()
+
 
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
