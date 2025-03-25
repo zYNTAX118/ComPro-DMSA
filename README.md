@@ -48,14 +48,15 @@ while using standard HTML and CSS for the front end.
 ---
 ## Roadmap
 1. **Front-end**
-    - Enhancing user experience by implementing minimalist UI 
+    - Enhancing user experience by implementing minimalist UI (65%)
     - Improving visuals and readability by choosing the right image files
     - Improving animations
-    - Improving mobile UI and scalability
+    - Improving mobile UI and scalability (40%)
     - adding videos and 3D overview of products
 
 2. **Back-End**
     - Implementing user input in contacts to give notifications through emails(added)
+    - Simple SQL database to store inquiries
 ---
 ## Contributing
 Currently, this repository is for demonstration purposes only. We are **not** accepting external contributions.
