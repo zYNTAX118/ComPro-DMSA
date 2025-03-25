@@ -4,9 +4,13 @@ import secrets
 import logging
 import base64
 import json
+from secrets import token_hex
 
 from flask import Flask, request, render_template, flash, redirect, url_for
 from dotenv import load_dotenv
+from database import ContactSubmission, SessionLocal
+
+
 
 # Google API imports
 from googleapiclient.discovery import build
@@ -30,11 +34,8 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "senderdmsa@gmail.com")
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.send',
-          'https://www.googleapis.com/auth/spreadsheets']
+SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
-SPREADSHEET_ID = '1Q2V7YUX7koqdh88fMp0MMe_34g4t9bkM_R_nk6xJEeo'
-RANGE_NAME = 'Sheet1!A:D'
 
 def get_credentials():
     """
@@ -102,6 +103,15 @@ def contact():
             return redirect(url_for('contact'))
 
         try:
+            # Commit to database
+            db_session = SessionLocal()
+            new_submission = ContactSubmission(
+                name=name,
+                email=email,
+                message=message
+            )
+            db_session.add(new_submission)
+            db_session.commit()
             # Admin notification
             admin_subject = "New Contact Form Submission"
             admin_body = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"

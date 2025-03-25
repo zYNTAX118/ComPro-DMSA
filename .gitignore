@@ -162,3 +162,5 @@ node_modules/
 client_secret.json
 oauth.py
 token.json
+
+contact_data.db
