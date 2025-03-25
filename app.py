@@ -1,10 +1,9 @@
 # app.py
 import os
-import secrets
 import logging
 import base64
 import json
-from secrets import token_hex
+
 
 from flask import Flask, request, render_template, flash, redirect, url_for
 from dotenv import load_dotenv
