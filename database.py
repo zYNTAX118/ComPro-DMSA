@@ -11,7 +11,7 @@ if not MONGO_URI:
 client = MongoClient(MONGO_URI)
 
 # Get a reference to the database. Adjust "myDatabase" to your desired database name.
-db = client.get_database("myDatabase")
+db = client.get_database("contact_db")
 
 # Get (or create) the collection for contact submissions.
 contact_submissions = db.contact_submissions
