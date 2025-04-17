@@ -1,18 +1,5 @@
 import os
 from pymongo import MongoClient
-from sqlalchemy import Column, Integer, String, Text
-from sqlalchemy.orm import declarative_base
-
-Base = declarative_base()
-
-
-class ContactSubmission(Base):
-    __tablename__ = "contact_submissions"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(100), nullable=False)
-    email = Column(String(255), nullable=False)
-    message = Column(Text, nullable=False)
 
 
 # Retrieve the MongoDB connection string from the environment variable or use a default.
