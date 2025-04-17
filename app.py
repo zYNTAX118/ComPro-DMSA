@@ -10,6 +10,9 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from email.mime.text import MIMEText
 from google.auth.transport.requests import Request
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Initialize Flask and logging
 app = Flask(__name__)
