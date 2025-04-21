@@ -580,7 +580,7 @@ footer {
 /* About Us*/
 
 .aboutus-parallax{
-  background-image:url('/static/images/about_us_banner.png');
+  background-image:url('/static/images/slider/A1.png');
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
@@ -606,7 +606,7 @@ footer {
 }
 
 .aboutus-parallax2{
-  background-image:url('/static/images/our_experiences_banner.png');
+  background-image:url('/static/images/slider/A2.png');
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
@@ -630,3 +630,30 @@ footer {
     box-sizing: border-box;
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
+
+.aboutus-parallax3{
+  background-image:url('/static/images/slider/A3.png');
+  min-height: 500px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.aboutus-box3{
+    display: flex;
+    flex-wrap: wrap;
+    background-color:red;
+    color: white;
+    height:auto;
+    width:100%;
+    text-align: left;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    gap: 50px;
+    box-sizing: border-box;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
