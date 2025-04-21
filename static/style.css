@@ -580,7 +580,7 @@ footer {
 /* About Us*/
 
 .aboutus-parallax{
-  background-image:url('/static/images/slider/A1.png');
+  background-image:url('/static/images/slider/A1.jpg');
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
@@ -606,7 +606,7 @@ footer {
 }
 
 .aboutus-parallax2{
-  background-image:url('/static/images/slider/A2.png');
+  background-image:url('/static/images/slider/A2.jpg');
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
@@ -632,7 +632,7 @@ footer {
 }
 
 .aboutus-parallax3{
-  background-image:url('/static/images/slider/A3.png');
+  background-image:url('/static/images/slider/A3.jpg');
   min-height: 500px;
   background-attachment: fixed;
   background-position: center;
