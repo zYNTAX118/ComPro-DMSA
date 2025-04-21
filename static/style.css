@@ -370,6 +370,17 @@ footer {
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
+.parallax3{
+  background-image:url('/static/images/Thomassen_gearreducerCD.jpg');
+  min-height: 500px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+
 .ccc-box{
     display: flex;
     flex-wrap: wrap;
@@ -513,6 +524,41 @@ footer {
 }
 
 .product-box2 img {
+    width:320px;
+    height:auto;
+}
+
+.product-box3{
+    width: 400px;
+    height: 350px;
+    background-color: #cccccc;
+    color: black;
+    font-family: "Futura";
+    font-weight: bold;
+    border-radius:10px;
+    flex: 0 0 400px;
+    overflow: hidden;
+    align-items:center;
+    padding: 1rem;
+}
+
+.product-box3:hover{
+    width: 400px;
+    height: 700px;
+    background-color: #FF9912;
+    color: white;
+    font-family: "Futura";
+    font-weight: bold;
+    overflow: hidden;
+    flex: 0 0 400px;
+    border-radius:10px;
+    transform:scale(1.02);
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.4),0 17px 50px 0 rgba(0,0,0,0.5);
+    transition:0.5s;
+
+}
+
+.product-box3 img {
     width:320px;
     height:auto;
 }
