@@ -7,7 +7,7 @@ MONGO_URI = os.environ.get("MONGO_URI")
 
 try:
     # Create a MongoClient.
-    client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=False, tlsinsecure=False)
+    client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=False, tlsInsecure=False)
 
     # Test the connection to ensure it's valid.
     client.admin.command('ping')
