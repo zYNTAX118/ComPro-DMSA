@@ -423,6 +423,20 @@ footer {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
+.thomassen-box{
+    display: flex;
+    flex-wrap: wrap;
+    background-color:#cc0000;
+    height:auto;
+    width:100%;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    gap: 50px;
+    box-sizing: border-box;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
 .product-box{
     width: 400px;
     height: 350px;
@@ -545,7 +559,7 @@ footer {
 .product-box3:hover{
     width: 400px;
     height: 700px;
-    background-color: #FF9912;
+    background-color: #0000FF;
     color: white;
     font-family: "Futura";
     font-weight: bold;
