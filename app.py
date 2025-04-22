@@ -34,22 +34,37 @@ gmail_service = None
 
 
 def get_credentials():
-    """
-    Load OAuth2 credentials from environment or local file.
-    """
-    token_json_env = os.getenv("TOKEN_JSON")
-    if token_json_env:
-        creds_info = json.loads(token_json_env)
-        creds = Credentials.from_authorized_user_info(creds_info, SCOPES)
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-        return creds
-    else:
-        if os.path.exists('token.json'):
-            return Credentials.from_authorized_user_file('token.json', SCOPES)
-        else:
-            raise RuntimeError("No credentials found. Run oauth.py locally or set TOKEN_JSON env.")
+    def get_credentials():
+        """
+        Load OAuth2 credentials from environment or local file.
+        """
+
+        def get_credentials():
+            """
+            Load Gmail API credentials from environment variable only.
+            Avoid fallback to Google Cloud default auth (which fails on Vercel).
+            """
+            token_json_env = os.getenv("TOKEN_JSON")
+            if not token_json_env:
+                logging.error("❌ TOKEN_JSON env var not found.")
+                raise RuntimeError("TOKEN_JSON environment variable is missing.")
+
+            try:
+                creds_info = json.loads(token_json_env)
+                creds = Credentials.from_authorized_user_info(creds_info, SCOPES)
+
+                # Optional: refresh token if expired
+                if not creds.valid:
+                    logging.info("🔁 Token expired, attempting refresh...")
+                    if creds.expired and creds.refresh_token:
+                        creds.refresh(Request())
+                        logging.info("✅ Token refreshed.")
+                    else:
+                        raise RuntimeError("Refresh token is missing or invalid.")
+                return creds
+            except Exception as e:
+                logging.error(f"❌ Failed to load credentials: {e}")
+                raise
 
 
 def get_gmail_service():
