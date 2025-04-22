@@ -448,6 +448,7 @@ footer {
     flex: 0 0 400px;
     overflow: hidden;
     align-items:center;
+    transition:0.5s;
     padding: 1rem;
 }
 
@@ -482,6 +483,7 @@ footer {
     flex: 0 0 400px;
     border-radius:10px;
     align-items:center;
+    transition:0.5s;
     padding: 1rem;
 }
 
@@ -519,11 +521,12 @@ footer {
     overflow: hidden;
     align-items:center;
     padding: 1rem;
+    transition:0.5s;
 }
 
 .product-box2:hover{
     width: 400px;
-    height: 700px;
+    height: 900px;
     background-color: #FF9912;
     color: white;
     font-family: "Futura";
@@ -558,7 +561,7 @@ footer {
 
 .product-box3:hover{
     width: 400px;
-    height: 700px;
+    height: 500px;
     background-color: #0000FF;
     color: white;
     font-family: "Futura";
