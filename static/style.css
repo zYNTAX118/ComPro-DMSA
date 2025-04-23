@@ -588,7 +588,7 @@ footer {
   background-attachment: fixed;      /* you can switch to scroll on mobile below */
   background-position: center center;
   background-size: cover;
-  min-height: 1000px;  /* replace with your actual image dimensions */
+  min-height: 700px;  /* replace with your actual image dimensions */
 }
 
 
