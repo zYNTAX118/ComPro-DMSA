@@ -588,7 +588,7 @@ footer {
   background-attachment: fixed;      /* you can switch to scroll on mobile below */
   background-position: center center;
   background-size: cover;
-  aspect-ratio: 1920 / 600;  /* replace with your actual image dimensions */
+  min-height: 1000px;  /* replace with your actual image dimensions */
 }
 
 
@@ -668,11 +668,8 @@ footer {
     width: 100%;
     background-attachment: scroll;
     /* height now comes from aspect-ratio */
-  }
- }
 
- @media (max-width: 768px) {
-  .aboutus-parallax2 {
+   .aboutus-parallax2 {
     left: auto;
     margin: 0;
     width: 100%;
@@ -680,3 +677,4 @@ footer {
     /* height now comes from aspect-ratio */
   }
  }
+
