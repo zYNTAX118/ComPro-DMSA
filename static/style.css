@@ -616,7 +616,7 @@ footer {
   background-attachment: fixed;      /* you can switch to scroll on mobile below */
   background-position: center center;
   background-size: cover;
-  aspect-ratio: 1920 / 600;  /* replace with your actual image dimensions */
+  aspect-ratio: 1920/1080;
 }
 
 .aboutus-box2{
@@ -661,15 +661,16 @@ footer {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
   .aboutus-parallax {
     left: auto;
     margin: 0;
     width: 100%;
     background-attachment: scroll;
     /* height now comes from aspect-ratio */
+    }
 
-   .aboutus-parallax2 {
+  .aboutus-parallax2 {
     left: auto;
     margin: 0;
     width: 100%;
