@@ -610,17 +610,22 @@ footer {
 
 /* 1) Use viewport units for the base height */
 .aboutus-parallax2 {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+
+  /* 2) Responsive height */
+  height: 40vh;        /* tweak this */
+  min-height: 200px;   /* so it never collapses too small */
+
+  /* 3) Parallax background */
   background-image: url('/static/images/slider/A2.jpg');
-  /* make it fill e.g. 60% of the viewport height */
-  height: 60vh;
-  min-height: 650px;        /* ensure you never go too short */
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-attachment: fixed;      /* you can switch to scroll on mobile below */
+  background-position: center center;
   background-size: cover;
-  box-shadow:
-    0 12px 16px rgba(0,0,0,0.24),
-    0 17px 50px rgba(0,0,0,0.19);
 }
 
 .aboutus-box2{
@@ -665,22 +670,10 @@ footer {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-/* 2) Adjust at common breakpoints */
-@media (max-width: 1200px) {
+/* 4) On small screens, switch to normal scrolling & adjust height */
+@media (max-width: 600px) {
   .aboutus-parallax2 {
-    height: 50vh;
-  }
-}
-@media (max-width: 768px) {
-  /* on tablets / small screens, reduce the height further... */
-  .aboutus-parallax2 {
-    height: 40vh;
-  }
-}
-@media (max-width: 480px) {
-  /* on phones, background-attachment: fixed often breaks */
-  .aboutus-parallax2 {
-    height: 30vh;
     background-attachment: scroll;
+    height: 30vh;
   }
 }
