@@ -611,15 +611,10 @@ footer {
 /* 1) Use viewport units for the base height */
 .aboutus-parallax2 {
   position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  width: 100vw;
 
   /* 2) Responsive height */
   height: 40vh;        /* tweak this */
-  min-height: 200px;   /* so it never collapses too small */
+  min-height: 500px;   /* so it never collapses too small */
 
   /* 3) Parallax background */
   background-image: url('/static/images/slider/A2.jpg');
@@ -670,10 +665,13 @@ footer {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
-/* 4) On small screens, switch to normal scrolling & adjust height */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .aboutus-parallax2 {
+    /* go back to normal flow */
+    left: auto;
+    margin: 0;
+    width: 100%;
+    /* disable fixed bg if you like */
     background-attachment: scroll;
-    height: 30vh;
   }
 }
