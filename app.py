@@ -55,13 +55,13 @@ def get_credentials():
 
     creds = Credentials.from_authorized_user_info(info, SCOPES)
     logging.info(
-        f"🔐 creds valid={creds.valid}, expired={creds.expired}, refresh={bool(creds.refresh_token)}"
+        f" creds valid={creds.valid}, expired={creds.expired}, refresh={bool(creds.refresh_token)}"
     )
     if creds.expired:
         if creds.refresh_token:
-            logging.info("🔁 refreshing expired token…")
+            logging.info(" refreshing expired token…")
             creds.refresh(Request())
-            logging.info("✅ token refreshed")
+            logging.info(" token refreshed")
         else:
             raise RuntimeError(
                 "Credentials expired and no refresh token available."
@@ -98,10 +98,10 @@ def send_email(to_email, subject, body):
         service.users().messages().send(
             userId='me', body={'raw': raw}
         ).execute()
-        logging.info(f"📧 Sent via Gmail API to {to_email}")
+        logging.info(f" Sent via Gmail API to {to_email}")
         return
     except Exception:
-        logging.exception("⚠️  Gmail API send failed, will try SMTP fallback")
+        logging.exception("  Gmail API send failed, will try SMTP fallback")
 
     # 2) SMTP fallback
     smtp_user = os.getenv("SMTP_EMAIL")
@@ -114,7 +114,7 @@ def send_email(to_email, subject, body):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(smtp_user, smtp_pass)
         smtp.send_message(msg)
-    logging.info(f"📧 Sent via SMTP to {to_email}")
+    logging.info(f" Sent via SMTP to {to_email}")
 
 
 # Import your MongoDB collection
@@ -151,7 +151,7 @@ def contact():
             # 1) store into MongoDB
             doc = {"name": name, "email": email, "message": message}
             res = contact_submissions.insert_one(doc)
-            logging.info(f"➕ Inserted contact id={res.inserted_id}")
+            logging.info(f" Inserted contact id={res.inserted_id}")
 
             # 2) notify admin
             send_email(
@@ -171,10 +171,10 @@ def contact():
                 )
             )
 
-            flash("✅ Your message and emails were sent successfully!", "success")
+            flash(" Your message and emails were sent successfully!", "success")
 
         except Exception as e:
-            logging.exception("❌ Error in /contact handler")
+            logging.exception(" Error in /contact handler")
             flash(f"Oops—there was an error: {e}", "error")
 
         return redirect(url_for('contact'))

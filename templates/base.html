@@ -66,14 +66,45 @@
           Our Partners:
         </p>
         <div class="partners_logos">
-          <a href="https://www.imi-critical.com/brands/imi-remosa/" target="_blank" rel="noopener noreferrer" class="imi"><img src="{{ url_for('static', filename='images/imi.png') }}" alt="Partners Logo" class="logo_imi"></a>
           <a href="https://process.honeywell.com/us/en/ccc" target="_blank" rel="noopener noreferrer" class="ccc"><img src="{{ url_for('static', filename='images/ccc.png') }}" alt="Partners Logo" class="logo_ccc"></a>
+          <a href="https://www.imi-critical.com/brands/imi-remosa/" target="_blank" rel="noopener noreferrer" class="imi"><img src="{{ url_for('static', filename='images/imi.png') }}" alt="Partners Logo" class="logo_imi"></a>
+          <a href="https://www.wika.com/en-en/engineered_solutions_temperature.WIKA" target="_blank" rel="noopener noreferrer" class="wika"><img src="{{ url_for('static', filename='images/wika.png') }}" alt="Partners Logo" class="logo_wika"></a>
           <a href="https://www.caesaroil.nl/history.html" target="_blank" rel="noopener noreferrer" class="thomassen"><img src="{{ url_for('static', filename='images/thomassen.png') }}" alt="Partners Logo" class="logo_thomassen"></a>
           <a href="https://www.wika.com/en-en/engineered_solutions_temperature.WIKA" target="_blank" rel="noopener noreferrer" class="wika"><img src="{{ url_for('static', filename='images/wika.png') }}" alt="Partners Logo" class="logo_wika"></a>
         </div>
       </div>
     </footer>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+      document.addEventListener('DOMContentLoaded', () => {
+        const el = document.querySelector('.aboutus-parallax2');
+        if (!el) return;
+
+        const speed = 0.5;  // 0 = no movement, 1 = background matches scroll speed
+
+        function update() {
+          // Get the distance from the top of the element to the top of viewport
+          const rect = el.getBoundingClientRect();
+          // We want to move the background as the element scrolls into view
+          const offset = -rect.top * speed;
+          el.style.backgroundPosition = `center ${offset}px`;
+        }
+
+        // Run on scroll, throttled via rAF
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              update();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        });
+
+        // And fire once to set the initial position
+        update();
+      });
+    </script>
   </body>
 </html>
