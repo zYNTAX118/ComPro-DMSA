@@ -25,7 +25,7 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
 
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "senderdmsa@gmail.com")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@dmsa.co.id")
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 # Global thread pool for sending emails concurrently.
