@@ -173,8 +173,8 @@ footer {
 }
 
 .logo_imi, .logo_ccc, .logo_thomassen, .logo_wika {
-  width: 250px;   /* or whatever size you want */
-  height: auto;   /* keeps the original aspect ratio */
+  width: 230px;   /* or whatever size you want */
+  height: 120px;   /* keeps the original aspect ratio */
   border-radius: 25px;
 }
 
