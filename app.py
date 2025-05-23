@@ -136,50 +136,50 @@ def products():
     return render_template('products.html')
 
 
-@app.route('/contact', methods=['GET', 'POST'])
-def contact():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        message = request.form.get('message')
+#@app.route('/contact', methods=['GET', 'POST'])
+#def contact():
+#    if request.method == 'POST':
+#        name = request.form.get('name')
+#        email = request.form.get('email')
+#        message = request.form.get('message')
 
-        if not (name and email and message):
-            flash("All fields are required!", "error")
-            return redirect(url_for('contact'))
+#        if not (name and email and message):
+#            flash("All fields are required!", "error")
+#            return redirect(url_for('contact'))
 
-        try:
-            # 1) store into MongoDB
-            doc = {"name": name, "email": email, "message": message}
-            res = contact_submissions.insert_one(doc)
-            logging.info(f" Inserted contact id={res.inserted_id}")
+#        try:
+#            # 1) store into MongoDB
+#            doc = {"name": name, "email": email, "message": message}
+#            res = contact_submissions.insert_one(doc)
+#            logging.info(f" Inserted contact id={res.inserted_id}")
 
             # 2) notify admin
-            send_email(
-                ADMIN_EMAIL,
-                "New Contact Form Submission",
-                f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
-            )
+#            send_email(
+#                ADMIN_EMAIL,
+#                "New Contact Form Submission",
+#                f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+#            )
 
             # 3) thank the user
-            send_email(
-                email,
-                "Thank you for contacting PT. DMSA",
-                (
-                    f"Dear {name},\n\n"
-                    "Thank you for your message. We have received it and will reply soon.\n\n"
-                    "Best,\nPT. DMSA Team"
-                )
-            )
+#           send_email(
+#                email,
+#                "Thank you for contacting PT. DMSA",
+#                (
+#                    f"Dear {name},\n\n"
+#                    "Thank you for your message. We have received it and will reply soon.\n\n"
+#                    "Best,\nPT. DMSA Team"
+#                )
+#            )
 
-            flash(" Your message and emails were sent successfully!", "success")
+#            flash(" Your message and emails were sent successfully!", "success")
 
-        except Exception as e:
-            logging.exception(" Error in /contact handler")
-            flash(f"Oops—there was an error: {e}", "error")
+#        except Exception as e:
+#            logging.exception(" Error in /contact handler")
+#            flash(f"Oops—there was an error: {e}", "error")
 
-        return redirect(url_for('contact'))
+#        return redirect(url_for('contact'))
 
-    return render_template('contact.html')
+#    return render_template('contact.html')#
 
 
 if __name__ == '__main__':
