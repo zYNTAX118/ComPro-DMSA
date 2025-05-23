@@ -1,126 +1,110 @@
-# app_optimized.py
-import os
-import logging
-import base64
-import json
-import concurrent.futures
-import smtplib
-
-from flask import Flask, request, render_template, flash, redirect, url_for
+import os, logging, base64, json, concurrent.futures, smtplib, requests   # ← add requests
+from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
-from email.mime.text import MIMEText
 from google.auth.transport.requests import Request
+from email.mime.text import MIMEText
 from dotenv import load_dotenv
-
 load_dotenv()
 
-# Initialize Flask and logging
+from database import contact_submissions                                 # ← your Mongo collection
+
+
+# ────────────────────────── Flask + config ─────────────────────────────
 app = Flask(__name__)
+app.config.update(
+    DEBUG=False,
+    SECRET_KEY=os.environ.get('SECRET_KEY', os.urandom(32)),
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax'
+)
 logging.basicConfig(level=logging.INFO)
-app.config['DEBUG'] = False
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(32))
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
+ADMIN_EMAIL             = os.getenv("ADMIN_EMAIL", "admin@dmsa.co.id")
+RECAPTCHA_SITE_KEY      = os.getenv("RECAPTCHA_SITE_KEY")
+RECAPTCHA_SECRET_KEY    = os.getenv("RECAPTCHA_SECRET_KEY")
+RECAPTCHA_THRESHOLD     = float(os.getenv("RECAPTCHA_THRESHOLD", 0.5))   # feel free to tune
 
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@dmsa.co.id")
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-
-# Global thread pool for sending emails concurrently.
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
-# Cache for the Gmail API service
 gmail_service = None
+# ───────────────────────────────────────────────────────────────────────
 
 
-def get_credentials():
+# ◇────────────────────  reCAPTCHA verifier  ────────────────────◇
+def verify_recaptcha(token: str, remote_ip: str | None = None) -> dict:
     """
-       Load credentials from TOKEN_JSON env var (if present) or from a local token.json file.
-       Refresh if expired.
-       """
-    # 1) Try env-var first
+    Returns Google’s verification JSON.
+    Raises ValueError if the call itself fails.
+    """
+    data = {
+        "secret": RECAPTCHA_SECRET_KEY,
+        "response": token,
+    }
+    if remote_ip:
+        data["remoteip"] = remote_ip
+
+    r = requests.post("https://www.google.com/recaptcha/api/siteverify", data=data, timeout=5)
+    if r.status_code != 200:
+        raise ValueError(f"reCAPTCHA HTTP {r.status_code}")
+    return r.json()
+# ◇───────────────────────────────────────────────────────────────◇
+
+
+# ───────────────────────  Gmail helpers (unchanged) ───────────────────
+def get_credentials():
     raw = os.getenv("TOKEN_JSON")
     if raw:
         info = json.loads(raw)
     else:
-        # fallback to token.json on disk
         token_path = os.path.join(os.getcwd(), "token.json")
         if not os.path.isfile(token_path):
-            raise RuntimeError(
-                "No TOKEN_JSON env var and no token.json file found."
-            )
+            raise RuntimeError("No TOKEN_JSON env var and no token.json file found.")
         with open(token_path, "r") as f:
             info = json.load(f)
 
     creds = Credentials.from_authorized_user_info(info, SCOPES)
-    logging.info(
-        f" creds valid={creds.valid}, expired={creds.expired}, refresh={bool(creds.refresh_token)}"
-    )
-    if creds.expired:
-        if creds.refresh_token:
-            logging.info(" refreshing expired token…")
-            creds.refresh(Request())
-            logging.info(" token refreshed")
-        else:
-            raise RuntimeError(
-                "Credentials expired and no refresh token available."
-            )
+    if creds.expired and creds.refresh_token:
+        creds.refresh(Request())
     return creds
 
 
 def get_gmail_service():
-    """
-    Returns a cached instance of the Gmail API service.
-    """
     global gmail_service
     if gmail_service is None:
-        creds = get_credentials()
-        gmail_service = build('gmail', 'v1', credentials=creds)
+        gmail_service = build('gmail', 'v1', credentials=get_credentials())
     return gmail_service
 
 
 def send_email(to_email, subject, body):
-    """
-        Try Gmail REST API first; on any failure, fall back to SMTP with an app password.
-        Any exception here will propagate so that the caller can catch & flash it.
-        """
-    # build the MIME message
     msg = MIMEText(body)
-    msg['To'] = to_email
-    msg['From'] = ADMIN_EMAIL
+    msg['To']      = to_email
+    msg['From']    = ADMIN_EMAIL
     msg['Subject'] = subject
 
-    # 1) Gmail API path
     try:
         service = get_gmail_service()
         raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
-        service.users().messages().send(
-            userId='me', body={'raw': raw}
-        ).execute()
-        logging.info(f" Sent via Gmail API to {to_email}")
+        service.users().messages().send(userId='me', body={'raw': raw}).execute()
+        logging.info(f"✉️  Sent via Gmail API to {to_email}")
         return
     except Exception:
-        logging.exception("  Gmail API send failed, will try SMTP fallback")
+        logging.exception("Gmail API failed – falling back to SMTP…")
 
-    # 2) SMTP fallback
     smtp_user = os.getenv("SMTP_EMAIL")
     smtp_pass = os.getenv("SMTP_PASS")
     if not smtp_user or not smtp_pass:
-        raise RuntimeError(
-            "SMTP_EMAIL or SMTP_PASS not set for fallback delivery."
-        )
+        raise RuntimeError("SMTP_EMAIL or SMTP_PASS not set for fallback delivery.")
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(smtp_user, smtp_pass)
         smtp.send_message(msg)
-    logging.info(f" Sent via SMTP to {to_email}")
+    logging.info(f"✉️  Sent via SMTP to {to_email}")
+# ───────────────────────────────────────────────────────────────────────
 
 
-# Import your MongoDB collection
-from database import contact_submissions
-
-
+# ───────────────────────────  Routes  ──────────────────────────
 @app.route('/')
 def home():
     return render_template('home.html')
@@ -136,51 +120,69 @@ def products():
     return render_template('products.html')
 
 
-#@app.route('/contact', methods=['GET', 'POST'])
-#def contact():
-#    if request.method == 'POST':
-#        name = request.form.get('name')
-#        email = request.form.get('email')
-#        message = request.form.get('message')
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        # 1) reCAPTCHA verification  ─────────────────────────────
+        token = request.form.get("g-recaptcha-response")
+        if not token:
+            flash("reCAPTCHA token missing – please retry.", "error")
+            return redirect(url_for('contact'))
 
-#        if not (name and email and message):
-#            flash("All fields are required!", "error")
-#            return redirect(url_for('contact'))
+        try:
+            rc = verify_recaptcha(token, request.remote_addr)
+            if not rc.get("success") or rc.get("score", 0) < RECAPTCHA_THRESHOLD or rc.get("action") != "contact":
+                logging.warning(f"reCAPTCHA failure: {rc}")
+                flash("reCAPTCHA verification failed. Please try again.", "error")
+                return redirect(url_for('contact'))
+        except Exception as e:
+            logging.exception("reCAPTCHA request error")
+            flash("Unable to verify reCAPTCHA. Please try later.", "error")
+            return redirect(url_for('contact'))
+        # ────────────────────────────────────────────────────────
 
-#        try:
-#            # 1) store into MongoDB
-#            doc = {"name": name, "email": email, "message": message}
-#            res = contact_submissions.insert_one(doc)
-#            logging.info(f" Inserted contact id={res.inserted_id}")
+        # 2) Grab the form fields
+        name    = request.form.get('name')
+        email   = request.form.get('email')
+        message = request.form.get('message')
 
-            # 2) notify admin
-#            send_email(
-#                ADMIN_EMAIL,
-#                "New Contact Form Submission",
-#                f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
-#            )
+        if not (name and email and message):
+            flash("All fields are required!", "error")
+            return redirect(url_for('contact'))
 
-            # 3) thank the user
-#           send_email(
-#                email,
-#                "Thank you for contacting PT. DMSA",
-#                (
-#                    f"Dear {name},\n\n"
-#                    "Thank you for your message. We have received it and will reply soon.\n\n"
-#                    "Best,\nPT. DMSA Team"
-#                )
-#            )
+        try:
+            # ▸  MongoDB
+            res = contact_submissions.insert_one({"name": name, "email": email, "message": message})
+            logging.info(f"Inserted contact id={res.inserted_id}")
 
-#            flash(" Your message and emails were sent successfully!", "success")
+            # ▸  Notify admin
+            send_email(
+                ADMIN_EMAIL,
+                "New Contact Form Submission",
+                f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            )
 
-#        except Exception as e:
-#            logging.exception(" Error in /contact handler")
-#            flash(f"Oops—there was an error: {e}", "error")
+            # ▸  Auto-reply to user
+            send_email(
+                email,
+                "Thank you for contacting PT. DMSA",
+                (
+                    f"Dear {name},\n\n"
+                    "Thank you for your message. We have received it and will reply soon.\n\n"
+                    "Best regards,\nPT. DMSA Team"
+                )
+            )
+            flash("Your message was sent successfully. Thank you!", "success")
 
-#        return redirect(url_for('contact'))
+        except Exception:
+            logging.exception("Error in /contact handler")
+            flash("Unexpected error – please try again later.", "error")
 
-#    return render_template('contact.html')#
+        return redirect(url_for('contact'))
+
+    # GET  → render template with the site key
+    return render_template('contact.html', site_key=RECAPTCHA_SITE_KEY)
 
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)
