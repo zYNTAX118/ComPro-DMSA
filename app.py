@@ -82,19 +82,20 @@ def get_gmail_service():
 
 def send_email(to_emails, subject, body, attachment=None, filename=None):
     msg = MIMEMultipart()
+
     if isinstance(to_emails, str):
         to_emails = [to_emails]
 
     msg['To'] = ", ".join(to_emails)
-    msg['From']    = ADMIN_EMAILS
+    msg['From'] = ADMIN_EMAILS[0] if isinstance(ADMIN_EMAILS, list) else ADMIN_EMAILS
     msg['Subject'] = subject
 
-    msg.attach(MIMEText(body))
+    msg.attach(MIMEText(body, "plain"))
 
     # If there's an attachment, add it
     if attachment and filename:
         part = MIMEBase('application', 'octet-stream')
-        part.set_payload(attachment.read())
+        part.set_payload(attachment)  # already read as bytes earlier
         encoders.encode_base64(part)
         part.add_header('Content-Disposition', f'attachment; filename="{filename}"')
         msg.attach(part)
@@ -117,6 +118,7 @@ def send_email(to_emails, subject, body, attachment=None, filename=None):
         smtp.login(smtp_user, smtp_pass)
         smtp.send_message(msg)
     logging.info(f"✉️  Sent via SMTP to {to_emails}")
+
 # ───────────────────────────────────────────────────────────────────────
 
 
