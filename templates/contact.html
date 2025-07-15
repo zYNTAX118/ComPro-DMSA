@@ -20,9 +20,10 @@ body {
 
 /* ==== Headings ==== */
 .container h2 {
-  margin-top: 0;
+  margin-top: 140px;
   font-size: 32px;
   text-align: center;
+
 }
 
 /* ==== Flash message ==== */
@@ -40,7 +41,8 @@ body {
 .contact-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;                        /* uniform spacing between groups   */
+  gap: 18px;
+  margin-top:140px;
 }
 
 .contact-form .form-group {
@@ -128,7 +130,7 @@ body {
     {% endif %}
   {% endwith %}
 
-  <form method="POST" action="{{ url_for('contact') }}" class="contact-form">
+  <form method="POST" action="{{ url_for('contact') }}" enctype="multipart/form-data" class="contact-form">
     <!-- hidden token field (MUST stay inside the form) -->
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
 
@@ -143,6 +145,10 @@ body {
     <div class="form-group">
       <label for="message">Message</label>
       <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="attachment">Attachment (optional)</label>
+      <input type="file" id="attachment" name="attachment" accept=".pdf,.doc,.docx,.jpg,.png,.txt">
     </div>
     <button type="submit" class="btn">Send Message</button>
   </form>

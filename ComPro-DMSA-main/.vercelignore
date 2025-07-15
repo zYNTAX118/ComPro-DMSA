@@ -1,0 +1,9 @@
+.git/
+.gitignore
+.env
+.idea/
+__pycache__/
+*.pyc
+tests/
+docs/
+*.md

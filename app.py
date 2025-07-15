@@ -5,6 +5,9 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
 load_dotenv()
 
 from database import contact_submissions                                 # ← your Mongo collection
@@ -77,11 +80,21 @@ def get_gmail_service():
     return gmail_service
 
 
-def send_email(to_email, subject, body):
-    msg = MIMEText(body)
+def send_email(to_email, subject, body, attachment=None, filename=None):
+    msg = MIMEMultipart()
     msg['To']      = to_email
     msg['From']    = ADMIN_EMAIL
     msg['Subject'] = subject
+
+    msg.attach(MIMEText(body))
+
+    # If there's an attachment, add it
+    if attachment and filename:
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f'attachment; filename="{filename}"')
+        msg.attach(part)
 
     try:
         service = get_gmail_service()
@@ -145,6 +158,9 @@ def contact():
         name    = request.form.get('name')
         email   = request.form.get('email')
         message = request.form.get('message')
+        file = request.files.get("attachment")
+        file_data = file.read() if file and file.filename else None
+        file_name = file.filename if file and file.filename else None
 
         if not (name and email and message):
             flash("All fields are required!", "error")
@@ -159,7 +175,9 @@ def contact():
             send_email(
                 ADMIN_EMAIL,
                 "New Contact Form Submission",
-                f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+                f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}",
+                attachment=file_data,
+                filename=file_name
             )
 
             # ▸  Auto-reply to user
