@@ -24,7 +24,7 @@ app.config.update(
 )
 logging.basicConfig(level=logging.INFO)
 
-ADMIN_EMAIL             = os.getenv("ADMIN_EMAIL", "admin@dmsa.co.id")
+ADMIN_EMAILS            = os.getenv("ADMIN_EMAIL", "").split(",")
 RECAPTCHA_SITE_KEY      = os.getenv("RECAPTCHA_SITE_KEY")
 RECAPTCHA_SECRET_KEY    = os.getenv("RECAPTCHA_SECRET_KEY")
 RECAPTCHA_THRESHOLD     = float(os.getenv("RECAPTCHA_THRESHOLD", 0.5))   # feel free to tune
@@ -80,10 +80,13 @@ def get_gmail_service():
     return gmail_service
 
 
-def send_email(to_email, subject, body, attachment=None, filename=None):
+def send_email(to_emails, subject, body, attachment=None, filename=None):
     msg = MIMEMultipart()
-    msg['To']      = to_email
-    msg['From']    = ADMIN_EMAIL
+    if isinstance(to_emails, str):
+        to_emails = [to_emails]
+
+    msg['To'] = ", ".join(to_emails)
+    msg['From']    = ADMIN_EMAILS
     msg['Subject'] = subject
 
     msg.attach(MIMEText(body))
@@ -100,7 +103,7 @@ def send_email(to_email, subject, body, attachment=None, filename=None):
         service = get_gmail_service()
         raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
         service.users().messages().send(userId='me', body={'raw': raw}).execute()
-        logging.info(f"✉️  Sent via Gmail API to {to_email}")
+        logging.info(f"✉️  Sent via Gmail API to {to_emails}")
         return
     except Exception:
         logging.exception("Gmail API failed – falling back to SMTP…")
@@ -113,7 +116,7 @@ def send_email(to_email, subject, body, attachment=None, filename=None):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(smtp_user, smtp_pass)
         smtp.send_message(msg)
-    logging.info(f"✉️  Sent via SMTP to {to_email}")
+    logging.info(f"✉️  Sent via SMTP to {to_emails}")
 # ───────────────────────────────────────────────────────────────────────
 
 
@@ -173,7 +176,7 @@ def contact():
 
             # ▸  Notify admin
             send_email(
-                ADMIN_EMAIL,
+                ADMIN_EMAILS,
                 "New Contact Form Submission",
                 f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}",
                 attachment=file_data,
