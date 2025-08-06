@@ -166,6 +166,16 @@ footer {
 
 .linkedin-heading    { margin-top: 1.5rem; font-size: 1.1rem; }
 
+.logo-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9d9d9;      /* light grey */
+  border-radius: 26px;
+  padding: 1.5rem 2.75rem;  /* same “breathing room” as the others */
+  margin: 0.5rem;
+}
+
 .imi:link, .ccc:link, .wika:link, .thomassen:link{
     background-color: #dddddd;
     color: black;
