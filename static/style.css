@@ -11,6 +11,10 @@ body, html {
     scroll-behavior: smooth;   /* optional smooth scrolling */
 }
 
+.overlay             { min-height: 100%; display: flex; flex-direction: column; }
+main                 { flex: 1 0 auto; }   /* grows to fill, pushes footer down */
+footer               { flex-shrink: 0; }
+
 @font-face {
     font-family: 'Futura';
     src: url('/static/fonts/Futura-Book-font.ttf') format('truetype');
@@ -156,6 +160,11 @@ footer {
   background-color: rgba(255, 255, 255, 0.8);
   align-items: center;    /* Vertically align them if needed */
 }
+
+.logo-linkedin       { height: 80px; transition: transform .2s ease; }
+.logo-linkedin:hover { transform: scale(1.06); }
+
+.linkedin-heading    { margin-top: 1.5rem; font-size: 1.1rem; }
 
 .imi:link, .ccc:link, .wika:link, .thomassen:link{
     background-color: #dddddd;
