@@ -507,7 +507,7 @@ footer {
 
 .product-box1{
     width: 400px;
-    height: 350px;
+    max-height: 360px;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
@@ -522,7 +522,7 @@ footer {
 
 .product-box1:hover{
     width: 400px;
-    height: 700px;
+    max-height: 1600px;
     background-color:#45b6fe;
     color: white;
     font-family: "Futura";
@@ -544,7 +544,7 @@ footer {
 
 .product-box2{
     width: 400px;
-    height: 350px;
+    max-height: 360px;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
@@ -559,7 +559,7 @@ footer {
 
 .product-box2:hover{
     width: 400px;
-    height: 900px;
+    max-height: 1600px;
     background-color: #FF9912;
     color: white;
     font-family: "Futura";
@@ -580,7 +580,7 @@ footer {
 
 .product-box3{
     width: 400px;
-    height: 350px;
+    max-height: 360px;
     background-color: #cccccc;
     color: black;
     font-family: "Futura";
@@ -594,7 +594,7 @@ footer {
 
 .product-box3:hover{
     width: 400px;
-    height: 500px;
+    max-height: 1600px;
     background-color: #0000FF;
     color: white;
     font-family: "Futura";
