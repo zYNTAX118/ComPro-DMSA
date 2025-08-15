@@ -3,123 +3,101 @@
 
 <style>
 /* ==== Base typography ==== */
-body {
-  font-family: "Segoe UI", Roboto, sans-serif;
-  line-height: 1.45;
-}
+body { font-family: "Segoe UI", Roboto, sans-serif; line-height: 1.45; }
 
 /* ==== Section container ==== */
 .container {
-  max-width: 640px;                 /* nice readable width              */
-  margin: 120px auto 60px;          /* push below navbar (≈100 px)       */
+  max-width: 720px;
+  margin: 120px auto 60px;
   padding: 32px 40px;
   background: rgba(255, 255, 255, 0.94);
   border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 
 /* ==== Headings ==== */
-.container h2 {
-  margin-top: 140px;
-  font-size: 32px;
-  text-align: center;
-
-}
+.container h2 { margin-top: 8px; font-size: 32px; text-align: center; }
 
 /* ==== Flash message ==== */
 .flash-messages {
-  margin-bottom: 20px;
-  padding: 12px 16px;
-  border-radius: 6px;
-  background: #ffeaea;
-  color: #b42424;
-  font-weight: 600;
-  text-align: center;
+  margin-bottom: 20px; padding: 12px 16px; border-radius: 6px;
+  background: #ffeaea; color: #b42424; font-weight: 600; text-align: center;
 }
 
 /* ==== Form layout ==== */
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin-top:140px;
-}
+.contact-form { display: flex; flex-direction: column; gap: 18px; margin-top: 16px; }
+.contact-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.contact-form .form-group { display: flex; flex-direction: column; }
 
-.contact-form .form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.contact-form label {
-  margin-bottom: 6px;
-  font-weight: 600;
-}
+.contact-form label { margin-bottom: 6px; font-weight: 600; }
 
 .contact-form input[type="text"],
 .contact-form input[type="email"],
-.contact-form textarea {
-  padding: 12px 14px;
-  font-size: 16px;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.2s;
+.contact-form input[type="tel"],
+.contact-form input[type="date"],
+.contact-form input[type="number"],
+.contact-form textarea,
+.contact-form select {
+  padding: 12px 14px; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 4px;
+  outline: none; transition: border-color 0.2s;
 }
-
 .contact-form input:focus,
-.contact-form textarea:focus {
-  border-color: #4caf50;
-}
+.contact-form textarea:focus,
+.contact-form select:focus { border-color: #0d6efd; }
 
-.contact-form textarea {
-  min-height: 140px;
-  resize: vertical;
-}
+.contact-form textarea { min-height: 140px; resize: vertical; }
 
 /* ==== Submit button ==== */
 .contact-form .btn {
-  align-self: flex-start;           /* keeps button left-aligned        */
-  background: #4caf50;
-  color: #fff;
-  border: none;
-  padding: 12px 28px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
+  align-self: flex-start; background: #0d6efd; color: #fff; border: none;
+  padding: 12px 28px; font-size: 16px; font-weight: 600; border-radius: 6px; cursor: pointer;
+  transition: transform .02s ease, opacity .2s ease;
 }
+.contact-form .btn:active { transform: translateY(1px); }
+.contact-form .btn[disabled] { opacity: .6; cursor: not-allowed; }
 
-.contact-form .btn:hover {
-  background: #45a049;
+/* ==== Dropzone ==== */
+.dropzone {
+  border: 2px dashed #9db4d3; border-radius: 8px; padding: 18px; text-align: center;
+  background: #f8fbff; transition: background .2s, border-color .2s;
 }
+.dropzone.dragover { background: #eef5ff; border-color: #0d6efd; }
+.dropzone p { margin: 0; }
 
-/* ==== reCAPTCHA badge (optional tweak) ==== */
-/* You may move it upward a little so it’s not buried by your image footer */
-.grecaptcha-badge {
-  z-index: 9999;          /* keep on top of the collage */
-  bottom: 12px !important;
-  right: 12px !important;
+/* ==== Preview list ==== */
+.preview-list { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 8px; }
+.preview-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: #fff;
 }
+.preview-name { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview-remove { border: none; background: #ffeaea; color: #a20000; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+
+/* ==== Progress bar ==== */
+.progress-wrap { display: none; margin-top: 6px; }
+.progress {
+  width: 100%; height: 10px; background: #edf2f7; border-radius: 6px; overflow: hidden;
+}
+.progress-inner { width: 0%; height: 100%; background: #0d6efd; }
+
+/* reCAPTCHA badge on top of footer collage */
+.grecaptcha-badge { z-index: 9999; bottom: 12px !important; right: 12px !important; }
 </style>
 
-<!-- load reCAPTCHA JS *before* your form -->
+<!-- reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
 <script>
-  // Obtain a token every time the page loads
-  grecaptcha.ready(function () {
-    grecaptcha.execute('{{ site_key }}', { action: 'contact' }).then(function (token) {
-      document.getElementById('g-recaptcha-response').value = token;
-    });
+grecaptcha.ready(function () {
+  grecaptcha.execute('{{ site_key }}', { action: 'contact' }).then(function (token) {
+    const field = document.getElementById('g-recaptcha-response');
+    if (field) field.value = token;
   });
+});
 </script>
 
-<style>
-/* … your existing CSS exactly as before … */
-</style>
-
-<div class="container" style="margin-top:100px;">
+<div class="container" style="margin-top:140px;">
   <h2>Contact Us</h2>
+
   {% with messages = get_flashed_messages() %}
     {% if messages %}
       <div class="flash-messages">
@@ -130,27 +108,245 @@ body {
     {% endif %}
   {% endwith %}
 
-  <form method="POST" action="{{ url_for('contact') }}" enctype="multipart/form-data" class="contact-form">
-    <!-- hidden token field (MUST stay inside the form) -->
+  <form id="contact-form" method="POST" action="{{ url_for('contact') }}" enctype="multipart/form-data" class="contact-form">
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
 
-    <div class="form-group">
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" placeholder="Your name" required>
+    <!-- Basic info -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Name *</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" placeholder="you@company.com" required>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="Your email" required>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="company">Company</label>
+        <input type="text" id="company" name="company" placeholder="Company Inc.">
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone / WhatsApp</label>
+        <input type="tel" id="phone" name="phone" placeholder="+62 ...">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="message">Message</label>
-      <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
+
+    <!-- Product prefillable -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="product">Product</label>
+        <input type="text" id="product" name="product" placeholder="(Auto-filled from catalogue link)">
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" placeholder="Valve / Sensor / Controller ...">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="attachment">Attachment (optional)</label>
-      <input type="file" id="attachment" name="attachment" accept=".pdf,.doc,.docx,.jpg,.png,.txt">
+
+    <!-- Inquiry type + dynamic fields -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="inquiry_type">Inquiry Type</label>
+        <select id="inquiry_type" name="inquiry_type">
+          <option value="standard">Standard</option>
+          <option value="bulk">Bulk Order</option>
+          <option value="service">Service / Maintenance</option>
+        </select>
+      </div>
+      <div class="form-group bulk-only" style="display:none;">
+        <label for="quantity">Estimated Quantity</label>
+        <input type="number" id="quantity" name="quantity" min="1" placeholder="e.g., 50">
+      </div>
     </div>
-    <button type="submit" class="btn">Send Message</button>
+    <div class="form-row bulk-only" style="display:none;">
+      <div class="form-group">
+        <label for="deadline">Delivery Deadline</label>
+        <input type="date" id="deadline" name="deadline">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="message">Message *</label>
+      <textarea id="message" name="message" placeholder="Tell us about your needs…" rows="5" required></textarea>
+    </div>
+
+    <!-- Drag & drop multi-file upload -->
+    <div class="form-group">
+      <label>Attachments (PDF/Images, multiple)</label>
+      <div id="dropzone" class="dropzone">
+        <p><strong>Drag & drop</strong> files here, or click to browse.</p>
+        <input id="file-input" type="file" name="attachments" multiple
+               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" style="display:none;">
+      </div>
+      <div id="preview-list" class="preview-list"></div>
+
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress"><div class="progress-inner" id="progress-inner"></div></div>
+        <small id="progress-text"></small>
+      </div>
+    </div>
+
+    <button type="submit" class="btn" id="submit-btn">Send Message</button>
+    <small id="form-status" style="margin-left:12px;"></small>
   </form>
 </div>
+
+<script>
+// ---- Simple state for selected files (so we can remove before submit)
+const state = { files: [] };
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('file-input');
+const previewList = document.getElementById('preview-list');
+
+function renderPreviews() {
+  previewList.innerHTML = '';
+  state.files.forEach((f, idx) => {
+    const row = document.createElement('div');
+    row.className = 'preview-item';
+    const name = document.createElement('div');
+    name.className = 'preview-name';
+    name.textContent = `${f.name} (${Math.round(f.size/1024)} KB)`;
+    const remove = document.createElement('button');
+    remove.className = 'preview-remove';
+    remove.type = 'button';
+    remove.textContent = 'Remove';
+    remove.onclick = () => { state.files.splice(idx,1); renderPreviews(); };
+    row.appendChild(name); row.appendChild(remove);
+    previewList.appendChild(row);
+  });
+}
+
+// Click to open file picker
+dropzone.addEventListener('click', () => fileInput.click());
+
+// Drop handlers
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault(); dropzone.classList.remove('dragover');
+  if (e.dataTransfer.files?.length) {
+    state.files.push(...e.dataTransfer.files);
+    renderPreviews();
+  }
+});
+fileInput.addEventListener('change', e => {
+  if (e.target.files?.length) {
+    state.files.push(...e.target.files);
+    renderPreviews();
+    fileInput.value = '';
+  }
+});
+
+// Dynamic fields (Bulk)
+const inquiryType = document.getElementById('inquiry_type');
+const bulkOnlyEls = Array.from(document.querySelectorAll('.bulk-only'));
+function updateBulkVisibility() {
+  const isBulk = inquiryType.value === 'bulk';
+  bulkOnlyEls.forEach(el => el.style.display = isBulk ? '' : 'none');
+}
+inquiryType.addEventListener('change', updateBulkVisibility);
+updateBulkVisibility();
+
+// Prefill from URL (?product=...&category=...)
+(function prefillFromURL(){
+  const params = new URLSearchParams(window.location.search);
+  const map = {
+    product: document.getElementById('product'),
+    category: document.getElementById('category'),
+    name: document.getElementById('name'),
+    email: document.getElementById('email')
+  };
+  for (const key in map) {
+    const val = params.get(key);
+    if (val && map[key]) map[key].value = decodeURIComponent(val);
+  }
+})();
+
+// Save minimal progress locally (so refresh doesn't kill effort)
+(function loadDraft(){
+  const ids = ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    const saved = localStorage.getItem('draft_'+id);
+    if (saved && el && !el.value) el.value = saved;
+  });
+})();
+function persistDraft(e){
+  const el = e.target;
+  if (!el.id) return;
+  localStorage.setItem('draft_'+el.id, el.value);
+}
+document.getElementById('contact-form').addEventListener('input', persistDraft);
+
+// XHR submit with upload progress
+const form = document.getElementById('contact-form');
+const submitBtn = document.getElementById('submit-btn');
+const statusEl = document.getElementById('form-status');
+const pw = document.getElementById('progress-wrap');
+const pi = document.getElementById('progress-inner');
+const pt = document.getElementById('progress-text');
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+
+  // basic required checks
+  if (!form.name.value || !form.email.value || !form.message.value) {
+    statusEl.textContent = 'Please fill required fields.'; statusEl.style.color = '#a20000';
+    return;
+  }
+
+  // Build formdata
+  const fd = new FormData(form);
+  // Append files under the same name "attachments"
+  state.files.forEach(f => fd.append('attachments', f));
+
+  // UI state
+  submitBtn.disabled = true;
+  statusEl.textContent = 'Uploading…';
+  statusEl.style.color = '#333';
+  pw.style.display = 'block'; pi.style.width = '0%'; pt.textContent = '';
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', form.action, true);
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  xhr.upload.onprogress = function(e){
+    if (e.lengthComputable) {
+      const pct = Math.round((e.loaded / e.total) * 100);
+      pi.style.width = pct + '%';
+      pt.textContent = pct + '%';
+    }
+  };
+
+  xhr.onreadystatechange = function(){
+    if (xhr.readyState === 4) {
+      submitBtn.disabled = false;
+
+      try {
+        const resp = JSON.parse(xhr.responseText);
+        if (xhr.status >= 200 && xhr.status < 300 && resp.ok) {
+          statusEl.textContent = resp.message || 'Sent!';
+          statusEl.style.color = '#0a8a00';
+          // clear draft
+          ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline']
+            .forEach(id => localStorage.removeItem('draft_'+id));
+          state.files = []; renderPreviews();
+          pi.style.width = '100%'; pt.textContent = '100%';
+        } else {
+          throw new Error(resp.message || 'Error');
+        }
+      } catch (err) {
+        statusEl.textContent = 'Submission failed. You can retry.';
+        statusEl.style.color = '#a20000';
+      }
+    }
+  };
+
+  xhr.send(fd);
+});
+</script>
+
 {% endblock %}

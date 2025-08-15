@@ -8,6 +8,9 @@ from dotenv import load_dotenv
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from io import BytesIO
 load_dotenv()
 
 from database import contact_submissions                                 # ← your Mongo collection
@@ -80,7 +83,12 @@ def get_gmail_service():
     return gmail_service
 
 
-def send_email(to_emails, subject, body, attachment=None, filename=None):
+# ───────────────────────  Gmail helpers (replace send_email) ───────────────────
+def send_email(to_emails, subject, body, attachments=None):
+    """
+    attachments: optional list of dicts like
+      [{"filename":"specs.pdf","data":b"...","mimetype":"application/pdf"}]
+    """
     msg = MIMEMultipart()
 
     if isinstance(to_emails, str):
@@ -89,16 +97,19 @@ def send_email(to_emails, subject, body, attachment=None, filename=None):
     msg['To'] = ", ".join(to_emails)
     msg['From'] = ADMIN_EMAILS[0] if isinstance(ADMIN_EMAILS, list) else ADMIN_EMAILS
     msg['Subject'] = subject
-
     msg.attach(MIMEText(body, "plain"))
 
-    # If there's an attachment, add it
-    if attachment and filename:
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload(attachment)  # already read as bytes earlier
-        encoders.encode_base64(part)
-        part.add_header('Content-Disposition', f'attachment; filename="{filename}"')
-        msg.attach(part)
+    # Attach any files
+    if attachments:
+        for att in attachments:
+            part = MIMEBase('application', 'octet-stream')
+            part.set_payload(att["data"])
+            encoders.encode_base64(part)
+            fname = att.get("filename", "attachment.bin")
+            part.add_header('Content-Disposition', f'attachment; filename="{fname}"')
+            if att.get("mimetype"):
+                part.add_header('Content-Type', att["mimetype"])
+            msg.attach(part)
 
     try:
         service = get_gmail_service()
@@ -119,6 +130,205 @@ def send_email(to_emails, subject, body, attachment=None, filename=None):
         smtp.send_message(msg)
     logging.info(f"✉️  Sent via SMTP to {to_emails}")
 
+def build_inquiry_pdf(data: dict, message: str, logo_path: str | None = None) -> bytes:
+    """
+    Returns PDF bytes summarizing an inquiry.
+    Prefers ReportLab (nice tables & wrapping). If ReportLab is not installed,
+    falls back to a small, hand-crafted PDF so emails still get an attachment.
+    """
+    # 1) Try ReportLab first (best look)
+    try:
+        from reportlab.lib.pagesizes import A4
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib import colors
+
+        buf = BytesIO()
+        doc = SimpleDocTemplate(
+            buf, pagesize=A4, title="Inquiry Confirmation", author="PT. DMSA",
+            leftMargin=36, rightMargin=36, topMargin=36, bottomMargin=36
+        )
+
+        styles = getSampleStyleSheet()
+        styles.add(ParagraphStyle(name="Small", fontSize=9, leading=12, textColor=colors.grey))
+        styles.add(ParagraphStyle(name="Body",  fontSize=11, leading=15))
+        styles.add(ParagraphStyle(name="Label", fontSize=10, leading=13, textColor=colors.HexColor("#444")))
+
+        story = []
+        # Optional logo
+        if logo_path and os.path.exists(logo_path):
+            try:
+                story.append(Image(logo_path, width=72, height=72))
+                story.append(Spacer(1, 6))
+            except Exception:
+                pass
+
+        story.append(Paragraph("Inquiry Confirmation", styles["Title"]))
+        story.append(Paragraph("Thank you for your inquiry. Here is a summary of your request.", styles["Small"]))
+        story.append(Spacer(1, 12))
+
+        # Key-value rows in a 2-col table
+        rows = []
+        def row(label, key):
+            val = data.get(key) or "-"
+            rows.append([f"<b>{label}</b>", Paragraph(str(val), styles["Body"])])
+
+        row("Reference No.", "ticket_id")
+        row("Submitted On", "submitted_on")
+        row("Name", "name")
+        row("Email", "email")
+        row("Phone / WhatsApp", "phone")
+        row("Company", "company")
+        row("Product", "product")
+        row("Category", "category")
+        row("Inquiry Type", "inquiry_type")
+        row("Quantity", "quantity")
+        row("Delivery Deadline", "deadline")
+
+        tbl = Table(rows, colWidths=[140, 360])
+        tbl.setStyle(TableStyle([
+            ("BOX", (0,0), (-1,-1), 0.75, colors.HexColor("#e2e8f0")),
+            ("INNERGRID", (0,0), (-1,-1), 0.25, colors.HexColor("#e2e8f0")),
+            ("VALIGN", (0,0), (-1,-1), "TOP"),
+            ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#f7fafc")),
+            ("LEFTPADDING", (0,0), (-1,-1), 6),
+            ("RIGHTPADDING", (0,0), (-1,-1), 6),
+            ("TOPPADDING", (0,0), (-1,-1), 6),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+        ]))
+        story.append(tbl)
+        story.append(Spacer(1, 14))
+
+        story.append(Paragraph("<b>Message</b>", styles["Label"]))
+        story.append(Paragraph((message or "-").replace("\n", "<br/>"), styles["Body"]))
+        story.append(Spacer(1, 18))
+
+        story.append(Paragraph("PT. Dwi Mandiri Sejahtera Agung", styles["Small"]))
+        story.append(Paragraph("Auto-generated for your records.", styles["Small"]))
+
+        doc.build(story)
+        return buf.getvalue()
+    except Exception:
+        logging.info("ReportLab not available; using minimal PDF fallback.")
+
+    # 2) Minimal built-in PDF fallback (single page, basic text)
+    try:
+        import textwrap
+        width, height = 595, 842  # A4 pts
+        lines = []
+
+        def _T(x, y, s, font="/F1", size=11):
+            s = s.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
+            lines.append(f"BT {font} {size} Tf {x} {y} Td ({s}) Tj ET")
+
+        def _TB(x, y, s):
+            _T(x, y, s, font="/F2", size=14)
+
+        _TB(50, height-60, "Inquiry Confirmation")
+        y = height - 95
+
+        kv = [
+            ("Reference No.", data.get("ticket_id","-")),
+            ("Submitted On", data.get("submitted_on","-")),
+            ("Name", data.get("name","-")),
+            ("Email", data.get("email","-")),
+            ("Phone / WhatsApp", data.get("phone","-")),
+            ("Company", data.get("company","-")),
+            ("Product", data.get("product","-")),
+            ("Category", data.get("category","-")),
+            ("Inquiry Type", data.get("inquiry_type","-")),
+            ("Quantity", data.get("quantity","-")),
+            ("Delivery Deadline", data.get("deadline","-")),
+        ]
+        for k, v in kv:
+            _T(50, y, f"{k}:")
+            for i, ln in enumerate(textwrap.wrap(str(v), width=75) or ["-"]):
+                _T(200, y - 16*i, ln)
+            y -= 20 + (16 * max(0, len(textwrap.wrap(str(v), width=75))-1))
+            if y < 140:
+                break
+
+        _TB(50, y, "Message")
+        y -= 20
+        for ln in textwrap.wrap(message or "-", width=95):
+            _T(50, y, ln)
+            y -= 16
+            if y < 100:
+                break
+
+        _T(50, 70, "PT. Dwi Mandiri Sejahtera Agung — Auto-generated confirmation")
+
+        content = ("\n".join(lines)).encode("latin-1", "ignore")
+        objects = []
+        def add(o): objects.append(o)
+
+        add("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n")
+        add("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n")
+        add("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>\nendobj\n")
+        add("4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n")
+        add("5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>\nendobj\n")
+        stream_header = f"6 0 obj\n<< /Length {len(content)} >>\nstream\n".encode("latin-1")
+        stream_footer = b"\nendstream\nendobj\n"
+
+        xref_positions = []
+        pdf = bytearray()
+        pdf += b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n"
+        def append_obj(raw):
+            xref_positions.append(len(pdf))
+            pdf.extend(raw.encode("latin-1"))
+
+        for o in objects:
+            append_obj(o)
+        xref_positions.append(len(pdf))
+        pdf.extend(stream_header)
+        pdf.extend(content)
+        pdf.extend(stream_footer)
+
+        xref_start = len(pdf)
+        count = 6
+        xref = ["xref\n0 %d\n" % (count + 1), "0000000000 65535 f \n"]
+        for pos in xref_positions:
+            xref.append(f"{pos:010d} 00000 n \n")
+        pdf.extend("".join(xref).encode("latin-1"))
+        trailer = (
+            "trailer\n"
+            f"<< /Size {count + 1} /Root 1 0 R >>\n"
+            "startxref\n"
+            f"{xref_start}\n"
+            "%%EOF\n"
+        ).encode("latin-1")
+        pdf.extend(trailer)
+        return bytes(pdf)
+    except Exception:
+        logging.exception("Minimal PDF fallback failed.")
+        return b""
+
+def format_inquiry_text(data: dict, message: str, filenames: list[str] | None = None) -> str:
+    lines = [
+        "New Inquiry",
+        "------------",
+        f"Reference No.: {data.get('ticket_id','-')}",
+        f"Submitted On: {data.get('submitted_on','-')}",
+        f"Name        : {data.get('name','-')}",
+        f"Email       : {data.get('email','-')}",
+        f"Phone       : {data.get('phone','-')}",
+        f"Company     : {data.get('company','-')}",
+        f"Product     : {data.get('product','-')}",
+        f"Category    : {data.get('category','-')}",
+        f"Inquiry Type: {data.get('inquiry_type','-')}",
+        f"Quantity    : {data.get('quantity','-')}",
+        f"Deadline    : {data.get('deadline','-')}",
+        "",
+        "Message:",
+        message or "-",
+    ]
+    if filenames:
+        lines += ["", "Uploaded files:"] + [f" - {n}" for n in filenames]
+    return "\n".join(lines)
+
+# ───────────────────────────────────────────────────────────────────────
+
+
 # ───────────────────────────────────────────────────────────────────────
 
 
@@ -138,73 +348,145 @@ def products():
     return render_template('products.html')
 
 
+# ───────────────────────────  Routes  ──────────────────────────
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        # 1) reCAPTCHA verification  ─────────────────────────────
+        # 1) reCAPTCHA verification
         token = request.form.get("g-recaptcha-response")
         if not token:
-            flash("reCAPTCHA token missing – please retry.", "error")
+            msg = "reCAPTCHA token missing – please retry."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 400
+            flash(msg, "error")
             return redirect(url_for('contact'))
 
         try:
             rc = verify_recaptcha(token, request.remote_addr)
             if not rc.get("success") or rc.get("score", 0) < RECAPTCHA_THRESHOLD or rc.get("action") != "contact":
                 logging.warning(f"reCAPTCHA failure: {rc}")
-                flash("reCAPTCHA verification failed. Please try again.", "error")
+                msg = "reCAPTCHA verification failed. Please try again."
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return {"ok": False, "message": msg}, 400
+                flash(msg, "error")
                 return redirect(url_for('contact'))
-        except Exception as e:
+        except Exception:
             logging.exception("reCAPTCHA request error")
-            flash("Unable to verify reCAPTCHA. Please try later.", "error")
+            msg = "Unable to verify reCAPTCHA. Please try later."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 500
+            flash(msg, "error")
             return redirect(url_for('contact'))
-        # ────────────────────────────────────────────────────────
 
-        # 2) Grab the form fields
-        name    = request.form.get('name')
-        email   = request.form.get('email')
-        message = request.form.get('message')
-        file = request.files.get("attachment")
-        file_data = file.read() if file and file.filename else None
-        file_name = file.filename if file and file.filename else None
+        # 2) Grab form fields
+        name        = request.form.get('name')
+        email       = request.form.get('email')
+        message     = request.form.get('message')
+        company     = request.form.get('company') or ""
+        phone       = request.form.get('phone') or ""
+        product     = request.form.get('product') or ""
+        category    = request.form.get('category') or ""
+        inquiry_type= request.form.get('inquiry_type') or "standard"
+        quantity    = request.form.get('quantity') or ""
+        deadline    = request.form.get('deadline') or ""
 
         if not (name and email and message):
-            flash("All fields are required!", "error")
+            msg = "Name, Email, and Message are required."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 400
+            flash(msg, "error")
             return redirect(url_for('contact'))
 
-        try:
-            # ▸  MongoDB
-            res = contact_submissions.insert_one({"name": name, "email": email, "message": message})
-            logging.info(f"Inserted contact id={res.inserted_id}")
+        # 3) Files: support both multi 'attachments' and legacy single 'attachment'
+        uploaded_files = []
+        filenames = []
+        # Multi
+        for fs in request.files.getlist("attachments"):
+            if fs and fs.filename:
+                data = fs.read()
+                if data:
+                    uploaded_files.append({"filename": fs.filename, "data": data, "mimetype": fs.mimetype or "application/octet-stream"})
+                    filenames.append(fs.filename)
+        # Single (legacy)
+        single = request.files.get("attachment")
+        if single and single.filename:
+            data = single.read()
+            if data:
+                uploaded_files.append({"filename": single.filename, "data": data, "mimetype": single.mimetype or "application/octet-stream"})
+                filenames.append(single.filename)
 
-            # ▸  Notify admin
+        try:
+            # 4) Save to Mongo
+            base_payload = {
+                "name": name, "email": email, "message": message,
+                "company": company, "phone": phone,
+                "product": product, "category": category,
+                "inquiry_type": inquiry_type, "quantity": quantity, "deadline": deadline
+            }
+            res = contact_submissions.insert_one(base_payload)
+            ticket_id = str(res.inserted_id)
+            submitted_on = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M %Z")
+
+            # enrich payload for emails/PDF
+            payload = dict(base_payload)
+            payload["ticket_id"] = ticket_id
+            payload["submitted_on"] = submitted_on
+
+            # 5) Build PDF (always try; fallback ensures bytes or empty)
+            logo = os.path.join(app.root_path, "static", "images", "logo.png")
+            pdf_bytes = build_inquiry_pdf(payload, message, logo_path=logo)
+            pdf_attachment = [{
+                "filename": f"inquiry_{ticket_id}.pdf",
+                "data": pdf_bytes,
+                "mimetype": "application/pdf"
+            }] if pdf_bytes else []
+
+            # 6) Build text bodies (details mirror the PDF)
+            details_text = format_inquiry_text(payload, message, filenames=filenames)
+
+            # 7) Emails
+            admin_subject = f"[DMSA] New Inquiry — Ref #{ticket_id}"
+            user_subject  = f"Your Inquiry Received — Ref #{ticket_id}"
+
+            # Admins: include user uploads + PDF
+            admin_attachments = uploaded_files + pdf_attachment
             send_email(
                 ADMIN_EMAILS,
-                "New Contact Form Submission",
-                f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}",
-                attachment=file_data,
-                filename=file_name
+                admin_subject,
+                details_text,
+                attachments=admin_attachments if admin_attachments else None
             )
 
-            # ▸  Auto-reply to user
+            # Customer: include only the PDF (not the big uploads)
             send_email(
                 email,
-                "Thank you for contacting PT. DMSA",
+                user_subject,
                 (
                     f"Dear {name},\n\n"
-                    "Thank you for your message. We have received it and will reply soon.\n\n"
-                    "Best regards,\nPT. DMSA Team"
-                )
+                    "Thank you for your inquiry. We've received it and will get back to you shortly.\n\n"
+                    + details_text +
+                    "\n\nBest regards,\nPT. DMSA Team"
+                ),
+                attachments=pdf_attachment if pdf_attachment else None
             )
-            flash("Your message was sent successfully. Thank you!", "success")
+
+            msg = "Your message was sent successfully. Thank you!"
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": True, "message": msg}, 200
+            flash(msg, "success")
 
         except Exception:
             logging.exception("Error in /contact handler")
-            flash("Unexpected error – please try again later.", "error")
+            msg = "Unexpected error – please try again later."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 500
+            flash(msg, "error")
 
         return redirect(url_for('contact'))
 
-    # GET  → render template with the site key
+    # GET
     return render_template('contact.html', site_key=RECAPTCHA_SITE_KEY)
+
 
 
 if __name__ == '__main__':

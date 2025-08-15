@@ -1,14 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
+
+<style>
+  /* tiny helper styles so buttons line up nicely */
+  .inquire-row {
+    display: flex; gap: 8px; align-items: center;
+    margin: 8px 20px 0;
+  }
+  .inquire-row .btn { padding: 6px 10px; font-size: 12px; }
+</style>
+
   <div class="product-content1">
     <div class="parallax"></div>
-    <div style="width:100%;height:auto;background-color:#cccccc;"><img src="{{ url_for('static', filename='images/ccc.png') }}" alt="Partners Logo" class="logo_ccc"></div>
+    <div style="width:100%;height:auto;background-color:#cccccc;">
+      <img src="{{ url_for('static', filename='images/ccc.png') }}" alt="Partners Logo" class="logo_ccc">
+    </div>
+
     <div class="ccc-box">
       <div class="product-box" id="ps1">
-        <a href="https://process.honeywell.com/us/en/products/turbomachinery-automation-systems/ccc-pro-built/control-systems/series-3" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/1C.png') }}" alt="Product1"></a>
+        <a href="https://process.honeywell.com/us/en/products/turbomachinery-automation-systems/ccc-pro-built/control-systems/series-3" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/1C.png') }}" alt="Product1">
+        </a>
         <p><br>CCC Controller S3++</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            The Series 3++ is a drop-in replacement for Series II, Series 3, and Series 3 Plus single-loop controllers—offering modern performance with no engineering or wiring changes.
+          The Series 3++ is a drop-in replacement for Series II, Series 3, and Series 3 Plus single-loop controllers—offering modern performance with no engineering or wiring changes.
           It retains the same form factor and configuration while upgrading the interface and electronics.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Supported Applications:</p>
@@ -18,12 +33,23 @@
           <li>Antisurge & Performance Control</li>
           <li>Dual-Loop Control</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'CCC Controller S3++'|urlencode }}&category={{ 'CCC Control Systems'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="CCC Controller S3++"
+             data-category="CCC Control Systems">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box">
-        <a href="https://process.honeywell.com/us/en/products/turbomachinery-automation-systems/ccc-pro-built/control-systems/prodigy" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/2C.png') }}" alt="Product1"></a>
+        <a href="https://process.honeywell.com/us/en/products/turbomachinery-automation-systems/ccc-pro-built/control-systems/prodigy" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/2C.png') }}" alt="Product1">
+        </a>
         <p><br>CCC Prodigy</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            The Prodigy is a powerful, scalable control platform designed for the most demanding turbomachinery systems.
+          The Prodigy is a powerful, scalable control platform designed for the most demanding turbomachinery systems.
           From compact simplex setups to large duplex I/O systems, it delivers real-time control, high efficiency, and system safety.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key features:</p>
@@ -33,19 +59,32 @@
           <li>Ideal for compressors, turbines, and auxiliary equipment</li>
           <li>Flexible architecture for any system size</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'CCC Prodigy'|urlencode }}&category={{ 'CCC Control Systems'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="CCC Prodigy"
+             data-category="CCC Control Systems">Copy inquiry link</a>
+        </div>
       </div>
-      </div>
+    </div>
   </div>
 
   <div class="product-content1">
     <div class="parallax1"></div>
-    <div style="width:100%;height:auto;background-color:#cccccc;"><img src="{{ url_for('static', filename='images/imi.png') }}" alt="Partners Logo" class="logo_imi"></div>
+    <div style="width:100%;height:auto;background-color:#cccccc;">
+      <img src="{{ url_for('static', filename='images/imi.png') }}" alt="Partners Logo" class="logo_imi">
+    </div>
+
     <div class="remosa-box">
       <div class="product-box1" id="ps2">
-        <a href="https://vivo.imi-critical.com/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/1.png') }}" alt="Product1"></a>
+        <a href="https://vivo.imi-critical.com/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/1.png') }}" alt="Product1">
+        </a>
         <p><br>IMI VIVO Electrolyser</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            As part of its commitment to clean energy, IMI has entered the green hydrogen market with the IMI VIVO Electrolyser—a turnkey system that uses renewable energy (solar, wind, or geothermal) to convert water into green hydrogen.
+          As part of its commitment to clean energy, IMI has entered the green hydrogen market with the IMI VIVO Electrolyser—a turnkey system that uses renewable energy (solar, wind, or geothermal) to convert water into green hydrogen.
           This solution supports the global energy transition and is fully customizable to meet specific needs and regulations.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key features:</p>
@@ -55,12 +94,23 @@
           <li>Customizable design with optional fuel cell integration</li>
           <li>Built to ISO 22734 standards</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI VIVO Electrolyser'|urlencode }}&category={{ 'IMI VIVO'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI VIVO Electrolyser"
+             data-category="IMI VIVO">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://vivo.imi-critical.com/pem-electrolyser/#:~:text=The%20IMI%20VIVO%20PEM%20Electrolyser,unique%20customer%20and%20regulatory%20requirements." target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/1V.png')}}"></a>
+        <a href="https://vivo.imi-critical.com/pem-electrolyser/#:~:text=The%20IMI%20VIVO%20PEM%20Electrolyser,unique%20customer%20and%20regulatory%20requirements." target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/1V.png') }}" alt="Product1">
+        </a>
         <p><br>PEM Electrolyser & Hydrogen Storage </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            IMI VIVO’s hydrogen storage solutions allow hydrogen produced from renewable sources—like wind, solar, or geothermal—to be safely stored for later use or transport.
+          IMI VIVO’s hydrogen storage solutions allow hydrogen produced from renewable sources—like wind, solar, or geothermal—to be safely stored for later use or transport.
           The stored hydrogen can be utilized on-site or delivered to other facilities for clean energy generation.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key features:</p>
@@ -69,12 +119,23 @@
           <li>Standard operating pressure up to 50 barg, with higher options available</li>
           <li>Designed for seamless integration with electrolyser systems</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'PEM Electrolyser & Hydrogen Storage'|urlencode }}&category={{ 'IMI VIVO'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="PEM Electrolyser & Hydrogen Storage"
+             data-category="IMI VIVO">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/diverter-valves/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/2.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/diverter-valves/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/2.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Diverter Valves</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-           The IMI Remosa Diverter Valve enables smooth redirection of flow between two outlet lines,
+          The IMI Remosa Diverter Valve enables smooth redirection of flow between two outlet lines,
           offering several performance-enhancing features:
         </p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -83,9 +144,20 @@
           <li>Thermal Flexibility: Floating cone design compensates for temperature-induced expansion, ensuring reliable operation.</li>
           <li>Durable Lining: In-house refractory lining and optional anti-erosion coatings provide extended service life in harsh conditions.</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Diverter Valves'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Diverter Valves"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/slide-valves/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/3.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/slide-valves/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/3.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Slide Valves</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Advantages of IMI Remosa Slide Valves:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -95,20 +167,42 @@
           <li>Reliable Manufacturing: The production process includes continuous quality checks and uses Finite Element Analysis (FEA) to ensure structural strength under pressure and load conditions.</li>
           <li>Flow Optimization: Advanced computational simulations are used to analyze valve performance in complex piping systems.</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Slide Valves'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Slide Valves"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
-        <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/double-clapet-isolation-valve/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/4.png') }}" alt="Product1"></a>
-        <p><br>IMI Double Clapet Isolation Valves</p>
-          <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
-            <li>Continuous Operation: The patented valve design allows maintenance on the Expander without shutting down the FCC unit.</li>
-            <li>Advanced Sealing: The disc and seat feature Stellite coating for durability, accommodate thermal changes, and prevent erosion and leaks (Class V certified).</li>
-            <li>Double Disc Safety: Dual discs with nitrogen pressurization ensure safe isolation, preventing operator exposure to hot gases.</li>
-            <li>Efficient Flow: Engineered for smooth flow with minimal energy loss and no wear on sealing surfaces.</li>
-            <li>Automated Control: Integrated with IMI Remosa’s hydraulic system for reliable open/close operation.</li>
-          </ul>
-      </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/butterfly-valves-for-power-recovery-turbines/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/5.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/double-clapet-isolation-valve/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/4.png') }}" alt="Product1">
+        </a>
+        <p><br>IMI Double Clapet Isolation Valves</p>
+        <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
+          <li>Continuous Operation: The patented valve design allows maintenance on the Expander without shutting down the FCC unit.</li>
+          <li>Advanced Sealing: The disc and seat feature Stellite coating for durability, accommodate thermal changes, and prevent erosion and leaks (Class V certified).</li>
+          <li>Double Disc Safety: Dual discs with nitrogen pressurization ensure safe isolation, preventing operator exposure to hot gases.</li>
+          <li>Efficient Flow: Engineered for smooth flow with minimal energy loss and no wear on sealing surfaces.</li>
+          <li>Automated Control: Integrated with IMI Remosa’s hydraulic system for reliable open/close operation.</li>
+        </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Double Clapet Isolation Valves'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Double Clapet Isolation Valves"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
+      </div>
+
+      <div class="product-box1">
+        <a href="https://www.imi-critical.com/product/butterfly-valves-for-power-recovery-turbines/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/5.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Butterfly Valves</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
           <li>Rapid Shut-Off: Operates in just 0.5 seconds to prevent turbine overspeed, featuring SIL3-certified emergency shutdown solenoids.</li>
@@ -116,19 +210,41 @@
           <li>High Durability: Handles temperatures up to 950°C using a lightweight domed disc and a strong nickel alloy shaft.</li>
           <li>Customizable Design: Available in sizes from 8" to 150", with options for both flanged and welded connections.</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Butterfly Valves'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Butterfly Valves"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/imi-remosas-free-standing-hydraulic-power-unit/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/6.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/imi-remosas-free-standing-hydraulic-power-unit/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/6.png') }}" alt="Product1">
+        </a>
         <p><br>IMI RHPU</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
           <br>The Remosa Hydraulic Power Unit offers powerful, precise, and rapid performance in a durable and intelligent design.
           It includes backup hydraulic energy storage, ensuring continuous operation even during extended power outages. Built to withstand tough conditions, it is certified for use in hazardous environments (Atex, UL, IECEX, FM, CSA) and is suitable for both onshore and offshore use.
         </p>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI RHPU'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI RHPU"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/catalyst-withdrawal-valves/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/7.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/catalyst-withdrawal-valves/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/7.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Catalyst Withdrawal Valves</p>
-         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
+        <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
           <br>Engineered for extreme conditions involving high heat and erosion, these valves are ideal for catalyst withdrawal systems.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"> Two configurations:</p>
@@ -140,14 +256,25 @@
           <li>Durable Construction: Built from forged and plate materials only (no cast parts), with critical components hard-faced in Stellite™ #6 for superior erosion resistance.</li>
           <li>Customizable design, Stellite™-coated sealing surfaces, and compliance with API 598 standards (on/off type).</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Catalyst Withdrawal Valves'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Catalyst Withdrawal Valves"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/fcc-air-blower-line-check-valves/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/8.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/fcc-air-blower-line-check-valves/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/8.png') }}" alt="Product1">
+        </a>
         <p><br>FCC Air Blower Line Check Valve</p>
-           <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
+        <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
           Designed to prevent catalyst backflow in FCC systems, these check valves deliver high compressor protection through a rugged and feature-rich construction.
           Fully customizable to plant needs, available in SA 516 Gr70 carbon steel, 304H stainless steel, or other materials on request.
-          </p>
+        </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
           <li>Fabricated from forged and plate materials (no cast parts)</li>
@@ -157,13 +284,24 @@
           <li>Oil dashpot to minimize vibration and chatter</li>
           <li>etc</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'FCC Air Blower Line Check Valve'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="FCC Air Blower Line Check Valve"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/fcc-hollow-or-cone-type-plug-valve/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/9.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/fcc-hollow-or-cone-type-plug-valve/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/9.png') }}" alt="Product1">
+        </a>
         <p><br>FCC Hollow or Cone Type Plug Valve</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            IMI Remosa plug valves are designed to regulate catalyst circulation in FCC units, tailored to meet the specific requirements of each process licensor.
-            As a critical component in the FCC reactor and regenerator loop, this valve type boasts the largest global install base—and includes the world’s largest plug valve of its kind.
+          IMI Remosa plug valves are designed to regulate catalyst circulation in FCC units, tailored to meet the specific requirements of each process licensor.
+          As a critical component in the FCC reactor and regenerator loop, this valve type boasts the largest global install base—and includes the world’s largest plug valve of its kind.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -173,9 +311,20 @@
           <li>Cone and seat lined with abrasion-resistant material</li>
           <li>Minimized erosion and reduced wear from plug-to-seat contact</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'FCC Hollow or Cone Type Plug Valve'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="FCC Hollow or Cone Type Plug Valve"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/active-purge-panel/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMI-REMOSA/10.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/active-purge-panel/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMI-REMOSA/10.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Active Purge Panel</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
           IMI Remosa’s Active Purging Panel offers automated, PLC-controlled purging for FCC valves, ensuring reliable performance under all process conditions. Real-time monitoring and adjustments protect valve components and support predictive maintenance.
@@ -188,12 +337,23 @@
           <li>Prevents valve damage during startup/shutdown</li>
           <li>Alarm system for flow anomalies and steam issues</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Active Purge Panel'|urlencode }}&category={{ 'IMI Remosa'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Active Purge Panel"
+             data-category="IMI Remosa">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/non-return-check-butterfly-valves-for-nuclear-application" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/1Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/non-return-check-butterfly-valves-for-nuclear-application" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/1Z.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Non-Return Check Butterfly Valves</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            Engineered for nuclear and industrial applications, these large-diameter valves (up to 4000mm) provide reliable bidirectional sealing and versatile drive options, including counterweight actuation. Built to resist corrosion and cavitation, they ensure dependable flow control in cooling circuits.
+          Engineered for nuclear and industrial applications, these large-diameter valves (up to 4000mm) provide reliable bidirectional sealing and versatile drive options, including counterweight actuation. Built to resist corrosion and cavitation, they ensure dependable flow control in cooling circuits.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -204,12 +364,23 @@
           <li>Corrosion and cavitation resistant</li>
           <li>Available with multiple actuation methods</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Non-Return Check Butterfly Valves'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Non-Return Check Butterfly Valves"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/fluidised-catalytic-cracking-unit-fractionator-isolation-valves/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/2Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/fluidised-catalytic-cracking-unit-fractionator-isolation-valves/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/2Z.png') }}" alt="Product1">
+        </a>
         <p><br>Fluidised Catalytic Cracking Unit Fractionator Isolation Valves</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            Designed for FCC fractionator isolation, IMI Z&amp;J’s double disc valves ensure safe, reliable shut-off with automatic line blinding. Built to handle harsh conditions, these valves protect against erosion and media buildup while offering flexible installation and tailored materials.
+          Designed for FCC fractionator isolation, IMI Z&amp;J’s double disc valves ensure safe, reliable shut-off with automatic line blinding. Built to handle harsh conditions, these valves protect against erosion and media buildup while offering flexible installation and tailored materials.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -219,12 +390,23 @@
           <li>Horizontal, vertical, and custom mounting options</li>
           <li>Reinforced body for line load durability</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'FCC Fractionator Isolation Valves'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="FCC Fractionator Isolation Valves"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/delayed-coking-top-unheading-valve/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/3Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/delayed-coking-top-unheading-valve/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/3Z.png') }}" alt="Product1">
+        </a>
         <p><br>Delayed Coking Top Unheading Valve</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            Built for severe refining environments, IMI Z&amp;J’s Top Unheading Valve uses a proven double disc gate design to deliver true double block and purge. It provides tight sealing, thermal stability, and reliable performance under high pressure and frequent cycling.
+          Built for severe refining environments, IMI Z&amp;J’s Top Unheading Valve uses a proven double disc gate design to deliver true double block and purge. It provides tight sealing, thermal stability, and reliable performance under high pressure and frequent cycling.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -236,12 +418,23 @@
           <li>Available with electric or hydraulic actuators</li>
           <li>Minimal spare parts needed for upkeep</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Delayed Coking Top Unheading Valve'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Delayed Coking Top Unheading Valve"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/delayed-coking-bottom-unheading-valve/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/4Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/delayed-coking-bottom-unheading-valve/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/4Z.png') }}" alt="Product1">
+        </a>
         <p><br>Delayed Coking Bottom Unheading Valve</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            IMI Z&amp;J’s Bottom Unheading Device uses trusted Double Disc Gate Valve Technology to ensure safe, automated unheading for delayed coking units. It enhances safety, reduces steam use, and simplifies operation in demanding environments.
+          IMI Z&amp;J’s Bottom Unheading Device uses trusted Double Disc Gate Valve Technology to ensure safe, automated unheading for delayed coking units. It enhances safety, reduces steam use, and simplifies operation in demanding environments.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -251,12 +444,23 @@
           <li>Corrosion and wear resistant for long service life</li>
           <li>No cooling water needed—easier maintenance</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Delayed Coking Bottom Unheading Valve'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Delayed Coking Bottom Unheading Valve"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/delayed-coking-bottom-unheading-valve/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/5Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/delayed-coking-bottom-unheading-valve/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/5Z.png') }}" alt="Product1">
+        </a>
         <p><br>Delayed Coking Bottom Unheading with Compact Design</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            IMI Z&amp;J’s fully automated Bottom Unheading Device ensures safe and efficient unheading in delayed coking units. Based on proven double disc gate valve technology, it minimizes operational risks and maintenance demands in harsh conditions.
+          IMI Z&amp;J’s fully automated Bottom Unheading Device ensures safe and efficient unheading in delayed coking units. Based on proven double disc gate valve technology, it minimizes operational risks and maintenance demands in harsh conditions.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -266,12 +470,23 @@
           <li>Corrosion and wear resistant construction</li>
           <li>No cooling water needed for simpler operation</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Bottom Unheading (Compact Design)'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Bottom Unheading (Compact Design)"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/wedge-within-wedge-isolation-valve/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/6Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/wedge-within-wedge-isolation-valve/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/6Z.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Wedge Isolation Valve</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            With over 60 years of field-proven performance, IMI Z&amp;J’s patented wedge-within-wedge gate valve is built for extreme conditions—handling high temperatures, pressures, and frequent cycling with outstanding reliability.
+          With over 60 years of field-proven performance, IMI Z&amp;J’s patented wedge-within-wedge gate valve is built for extreme conditions—handling high temperatures, pressures, and frequent cycling with outstanding reliability.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -280,12 +495,23 @@
           <li>Rising stem (O&Y type) for easy inspection and smooth operation</li>
           <li>Flanged or butt-weld end connections available</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Wedge Isolation Valve'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Wedge Isolation Valve"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/ethylene-transfer-line-and-decoking-valves/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/7Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/ethylene-transfer-line-and-decoking-valves/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/7Z.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Ethylene Transfer Line and Decoking Valves</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            IMI Z&amp;J’s double disc valves deliver true double block and purge safety in a single body—ideal for ethylene cracking and decoking without shutdown. Proven in harsh conditions with reliable sealing and long-lasting durability.
+          IMI Z&amp;J’s double disc valves deliver true double block and purge safety in a single body—ideal for ethylene cracking and decoking without shutdown. Proven in harsh conditions with reliable sealing and long-lasting durability.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -296,12 +522,23 @@
           <li>Mountable in any orientation</li>
           <li>Custom-built to international standards</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Ethylene Transfer Line and Decoking Valves'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Ethylene Transfer Line and Decoking Valves"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/fluidised-catalytic-cracking-unit-flue-gas-isolation-goggle-valves/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/8Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/fluidised-catalytic-cracking-unit-flue-gas-isolation-goggle-valves/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/8Z.png') }}" alt="Product1">
+        </a>
         <p><br>Fluidised Catalytic Cracking Unit Flue Gas Isolation Valves</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            This valve ensures complete media isolation with zero leakage for safety-critical gas systems. Built to handle high temperatures and prevent jamming, it offers dependable shut-off even under fluctuating thermal conditions.
+          This valve ensures complete media isolation with zero leakage for safety-critical gas systems. Built to handle high temperatures and prevent jamming, it offers dependable shut-off even under fluctuating thermal conditions.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -310,12 +547,23 @@
           <li>Installs in horizontal, vertical, or inclined positions</li>
           <li>Designed for thermal fluctuation and zero jamming</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'FCC Flue Gas Isolation Valves'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="FCC Flue Gas Isolation Valves"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box1">
-        <a href="https://www.imi-critical.com/product/hpcu-compact-fcc-hydraulic-power-control-unit/" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/IMIZJ/9Z.png') }}" alt="Product1"></a>
+        <a href="https://www.imi-critical.com/product/hpcu-compact-fcc-hydraulic-power-control-unit/" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/IMIZJ/9Z.png') }}" alt="Product1">
+        </a>
         <p><br>IMI Compact FCC HPCU</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            IMI Z&amp;J’s HPCU Compact delivers high-performance valve control in a space-saving package. Designed with decades of industry experience, it combines easy installation, intelligent features, and low life cycle costs for FCC applications.
+          IMI Z&amp;J’s HPCU Compact delivers high-performance valve control in a space-saving package. Designed with decades of industry experience, it combines easy installation, intelligent features, and low life cycle costs for FCC applications.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -325,19 +573,32 @@
           <li>Digital control system</li>
           <li>Standardized, fully stocked components</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'IMI Compact FCC HPCU'|urlencode }}&category={{ 'IMI Z&J'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="IMI Compact FCC HPCU"
+             data-category="IMI Z&J">Copy inquiry link</a>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="product-content1">
     <div class="parallax2"></div>
-    <div style="width:100%;height:auto;background-color:#cccccc;"><img src="{{ url_for('static', filename='images/wika.png') }}" alt="Partners Logo" class="logo_wika"></div>
+    <div style="width:100%;height:auto;background-color:#cccccc;">
+      <img src="{{ url_for('static', filename='images/wika.png') }}" alt="Partners Logo" class="logo_wika">
+    </div>
+
     <div class="wika-box">
       <div class="product-box2" id="ps3">
-        <a href="https://www.wika.com/en-en/pressure_gauges.WIKA" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/wika/1W.png') }}" alt="Product1"></a>
+        <a href="https://www.wika.com/en-en/pressure_gauges.WIKA" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/wika/1W.png') }}" alt="Product1">
+        </a>
         <p><br>Pressure Gauge</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            Pressure gauges are instruments used to measure and display gauge, absolute, or differential pressure. Depending on the application, they use Bourdon tubes, diaphragms, or capsule elements to convert pressure into readable values.
+          Pressure gauges are instruments used to measure and display gauge, absolute, or differential pressure. Depending on the application, they use Bourdon tubes, diaphragms, or capsule elements to convert pressure into readable values.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -346,12 +607,23 @@
           <li><b>Materials:</b> Plastic with copper alloy for neutral media, chrome with glycerine for vibration, stainless steel or coated for aggressive environments</li>
           <li><b>Accuracy Classes:</b> Ranges from 4% (plastic) to 0.1% (test gauges), depending on material and use</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Pressure Gauge'|urlencode }}&category={{ 'WIKA'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Pressure Gauge"
+             data-category="WIKA">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box2">
-        <a href="https://www.wika.com/en-en/pressure_sensors.WIKA" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/wika/2W.png') }}" alt="Product1"></a>
+        <a href="https://www.wika.com/en-en/pressure_sensors.WIKA" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/wika/2W.png') }}" alt="Product1">
+        </a>
         <p><br>Pressure Sensor</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            Pressure sensors convert physical pressure into electrical signals, while transmitters include standardised connections and output signals for easy integration. WIKA offers various sensor types for absolute, gauge, and differential pressure measurement.
+          Pressure sensors convert physical pressure into electrical signals, while transmitters include standardised connections and output signals for easy integration. WIKA offers various sensor types for absolute, gauge, and differential pressure measurement.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -361,12 +633,23 @@
           <li><b>Differential Pressure:</b> Measures pressure differences—ideal for filters, pumps, compressors, and pharma applications</li>
           <li><b>Transmitters:</b> Include standard output and interface for simplified system use</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Pressure Sensor'|urlencode }}&category={{ 'WIKA'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Pressure Sensor"
+             data-category="WIKA">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box2">
-        <a href="https://www.wika.com/en-en/process_transmitters.WIKA" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/wika/3W.png') }}" alt="Product1"></a>
+        <a href="https://www.wika.com/en-en/process_transmitters.WIKA" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/wika/3W.png') }}" alt="Product1">
+        </a>
         <p><br>Process Transmitters</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            WIKA process transmitters offer adjustable measurement ranges, zero points, and parameters—ideal for complex industrial and process engineering tasks. They support turndown functionality and integrate with diaphragm seals for high precision and flexibility.
+          WIKA process transmitters offer adjustable measurement ranges, zero points, and parameters—ideal for complex industrial and process engineering tasks. They support turndown functionality and integrate with diaphragm seals for high precision and flexibility.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -376,12 +659,23 @@
           <li>Models: UPT (universal), IPT/CPT (industrial), DPT (differential)</li>
           <li>Differential models support level and flow measurement in closed systems</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Process Transmitters'|urlencode }}&category={{ 'WIKA'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Process Transmitters"
+             data-category="WIKA">Copy inquiry link</a>
+        </div>
       </div>
+
       <div class="product-box2">
-        <a href="https://www.wika.com/en-en/multipoint_thermometers.WIKA" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/wika/4W.jpg') }}" alt="Product1"></a>
+        <a href="https://www.wika.com/en-en/multipoint_thermometers.WIKA" target="_blank" rel="noopener noreferrer">
+          <img src="{{ url_for('static', filename='images/wika/4W.jpg') }}" alt="Product1">
+        </a>
         <p><br>Multipoint Thermocouple</p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;"><br>
-            WIKA is a global leader in multipoint temperature measurement solutions for refining and petrochemical industries. Trusted by major companies, WIKA offers both traditional and advanced sensor technologies to meet diverse application needs.
+          WIKA is a global leader in multipoint temperature measurement solutions for refining and petrochemical industries. Trusted by major companies, WIKA offers both traditional and advanced sensor technologies to meet diverse application needs.
         </p>
         <p style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">Key Features:</p>
         <ul style="text-align:left; font-size:12px; margin-left:20px; font-family:futura; font-weight:normal;">
@@ -390,16 +684,72 @@
           <li>Mini-multipoint options for high point density and compact spaces</li>
           <li>Stuffed and drawn assemblies for demanding applications</li>
         </ul>
+        <div class="inquire-row">
+          <a class="btn btn-sm btn-primary"
+             href="{{ url_for('contact') }}?product={{ 'Multipoint Thermocouple'|urlencode }}&category={{ 'WIKA'|urlencode }}">Inquire</a>
+          <a href="#" class="btn btn-sm btn-outline-secondary"
+             data-copy-inquiry
+             data-product="Multipoint Thermocouple"
+             data-category="WIKA">Copy inquiry link</a>
+        </div>
       </div>
     </div>
+
     <div class="product-content1">
-    <div class="parallax3"></div>
-    <div style="width:100%;height:auto;background-color:#cccccc;"><img src="{{ url_for('static', filename='images/thomassen.png') }}" alt="Partners Logo" class="logo_wika"></div>
-    <div class="thomassen-box">
-      <div class="product-box3" id="ps4">
-        <a href="https://www.caesaroil.nl/pumping_equipment.html" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='images/1T.png') }}" alt="Product1"></a>
-        <p><br>Pumping Unit Spare Parts</p>
+      <div class="parallax3"></div>
+      <div style="width:100%;height:auto;background-color:#cccccc;">
+        <img src="{{ url_for('static', filename='images/thomassen.png') }}" alt="Partners Logo" class="logo_wika">
+      </div>
+
+      <div class="thomassen-box">
+        <div class="product-box3" id="ps4">
+          <a href="https://www.caesaroil.nl/pumping_equipment.html" target="_blank" rel="noopener noreferrer">
+            <img src="{{ url_for('static', filename='images/1T.png') }}" alt="Product1">
+          </a>
+          <p><br>Pumping Unit Spare Parts</p>
+          <div class="inquire-row">
+            <a class="btn btn-sm btn-primary"
+               href="{{ url_for('contact') }}?product={{ 'Pumping Unit Spare Parts'|urlencode }}&category={{ 'Thomassen / Caesar Oil'|urlencode }}">Inquire</a>
+            <a href="#" class="btn btn-sm btn-outline-secondary"
+               data-copy-inquiry
+               data-product="Pumping Unit Spare Parts"
+               data-category="Thomassen / Caesar Oil">Copy inquiry link</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+<script>
+  // One tiny script to power all "Copy inquiry link" buttons
+  (function(){
+    const baseContact = "{{ url_for('contact') }}";
+    document.querySelectorAll('[data-copy-inquiry]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const p  = btn.getAttribute('data-product')  || '';
+        const c  = btn.getAttribute('data-category') || '';
+        const it = btn.getAttribute('data-inquiry')  || ''; // optional
+        const params = new URLSearchParams();
+        if (p) params.set('product', p);
+        if (c) params.set('category', c);
+        if (it) params.set('inquiry_type', it);
+        const url = `${baseContact}?${params.toString()}`;
+
+        (navigator.clipboard
+          ? navigator.clipboard.writeText(url)
+          : Promise.reject()
+        ).then(() => {
+          const prev = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => btn.textContent = prev, 1400);
+        }).catch(() => {
+          // Fallback prompt on old browsers
+          window.prompt('Copy this inquiry link:', url);
+        });
+      });
+    });
+  })();
+</script>
+
 {% endblock %}
