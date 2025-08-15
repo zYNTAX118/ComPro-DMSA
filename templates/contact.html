@@ -283,70 +283,76 @@ document.getElementById('contact-form').addEventListener('input', persistDraft);
 
 // XHR submit with upload progress
 const form = document.getElementById('contact-form');
-const submitBtn = document.getElementById('submit-btn');
-const statusEl = document.getElementById('form-status');
-const pw = document.getElementById('progress-wrap');
-const pi = document.getElementById('progress-inner');
-const pt = document.getElementById('progress-text');
+  const submitBtn = document.getElementById('submit-btn');
+  const statusEl = document.getElementById('form-status');
+  const pw = document.getElementById('progress-wrap');
+  const pi = document.getElementById('progress-inner');
+  const pt = document.getElementById('progress-text');
 
-form.addEventListener('submit', function(e){
-  e.preventDefault();
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
 
-  // basic required checks
-  if (!form.name.value || !form.email.value || !form.message.value) {
-    statusEl.textContent = 'Please fill required fields.'; statusEl.style.color = '#a20000';
-    return;
-  }
-
-  // Build formdata
-  const fd = new FormData(form);
-  // Append files under the same name "attachments"
-  state.files.forEach(f => fd.append('attachments', f));
-
-  // UI state
-  submitBtn.disabled = true;
-  statusEl.textContent = 'Uploading…';
-  statusEl.style.color = '#333';
-  pw.style.display = 'block'; pi.style.width = '0%'; pt.textContent = '';
-
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', form.action, true);
-  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-
-  xhr.upload.onprogress = function(e){
-    if (e.lengthComputable) {
-      const pct = Math.round((e.loaded / e.total) * 100);
-      pi.style.width = pct + '%';
-      pt.textContent = pct + '%';
+    if (!form.name.value || !form.email.value || !form.message.value) {
+      statusEl.textContent = 'Please fill required fields.'; statusEl.style.color = '#a20000';
+      return;
     }
-  };
 
-  xhr.onreadystatechange = function(){
-    if (xhr.readyState === 4) {
-      submitBtn.disabled = false;
+    submitBtn.disabled = true;
+    statusEl.textContent = 'Verifying…';
+    statusEl.style.color = '#333';
 
-      try {
-        const resp = JSON.parse(xhr.responseText);
-        if (xhr.status >= 200 && xhr.status < 300 && resp.ok) {
-          statusEl.textContent = resp.message || 'Sent!';
-          statusEl.style.color = '#0a8a00';
-          // clear draft
-          ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline']
-            .forEach(id => localStorage.removeItem('draft_'+id));
-          state.files = []; renderPreviews();
-          pi.style.width = '100%'; pt.textContent = '100%';
-        } else {
-          throw new Error(resp.message || 'Error');
-        }
-      } catch (err) {
-        statusEl.textContent = 'Submission failed. You can retry.';
-        statusEl.style.color = '#a20000';
-      }
-    }
-  };
+    // 1) Get a brand-new token JUST BEFORE sending
+    grecaptcha.ready(function(){
+      grecaptcha.execute('{{ site_key }}', { action: 'contact' }).then(function(token){
+        // 2) Build fresh FormData after we have the token
+        const fd = new FormData(form);
+        // Append selected files from your state
+        (window.state?.files || []).forEach(f => fd.append('attachments', f));
+        // Put token in the form
+        fd.set('g-recaptcha-response', token);
 
-  xhr.send(fd);
-});
+        // 3) Now send XHR with progress
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+        pw.style.display = 'block'; pi.style.width = '0%'; pt.textContent = '0%';
+        xhr.upload.onprogress = function(e){
+          if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 100);
+            pi.style.width = pct + '%';
+            pt.textContent = pct + '%';
+          }
+        };
+
+        xhr.onreadystatechange = function(){
+          if (xhr.readyState === 4) {
+            submitBtn.disabled = false;
+            try {
+              const resp = JSON.parse(xhr.responseText);
+              if (xhr.status >= 200 && xhr.status < 300 && resp.ok) {
+                statusEl.textContent = resp.message || 'Sent!'; statusEl.style.color = '#0a8a00';
+                // clear draft + files
+                ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline']
+                  .forEach(id => localStorage.removeItem('draft_'+id));
+                window.state.files = []; renderPreviews();
+                pi.style.width = '100%'; pt.textContent = '100%';
+              } else {
+                throw new Error(resp.message || 'Error');
+              }
+            } catch (err) {
+              statusEl.textContent = 'Submission failed. Please try again.'; statusEl.style.color = '#a20000';
+            }
+          }
+        };
+
+        xhr.send(fd);
+      }).catch(function(){
+        submitBtn.disabled = false;
+        statusEl.textContent = 'reCAPTCHA failed to start. Please try again.'; statusEl.style.color = '#a20000';
+      });
+    });
+  });
 </script>
 
 {% endblock %}
