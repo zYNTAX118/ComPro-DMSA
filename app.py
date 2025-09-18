@@ -326,12 +326,6 @@ def format_inquiry_text(data: dict, message: str, filenames: list[str] | None = 
         lines += ["", "Uploaded files:"] + [f" - {n}" for n in filenames]
     return "\n".join(lines)
 
-# ───────────────────────────────────────────────────────────────────────
-
-
-# ───────────────────────────────────────────────────────────────────────
-
-
 # ───────────────────────────  Routes  ──────────────────────────
 @app.route('/')
 def home():
@@ -486,7 +480,6 @@ def contact():
 
     # GET
     return render_template('contact.html', site_key=RECAPTCHA_SITE_KEY)
-
 
 
 if __name__ == '__main__':
