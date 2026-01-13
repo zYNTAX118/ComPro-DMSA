@@ -391,6 +391,8 @@ def contact():
             flash(msg, "error")
             return redirect(url_for('contact'))
 
+
+
         # 3) Files: support both multi 'attachments' and legacy single 'attachment'
         uploaded_files = []
         filenames = []
