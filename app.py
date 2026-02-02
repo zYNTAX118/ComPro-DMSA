@@ -12,7 +12,6 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from io import BytesIO
 load_dotenv()
-
 from database import contact_submissions                                 # ← your Mongo collection
 
 
@@ -465,6 +464,7 @@ def contact():
                 ),
                 attachments=pdf_attachment if pdf_attachment else None
             )
+
 
             msg = "Your message was sent successfully. Thank you!"
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":

@@ -310,7 +310,7 @@ const form = document.getElementById('contact-form');
         // 2) Build fresh FormData after we have the token
         const fd = new FormData(form);
         // Append selected files from your state
-        (window.state?.files || []).forEach(f => fd.append('attachments', f));
+        (state.files || []).forEach(f => fd.append('attachments', f));
         // Put token in the form
         fd.set('g-recaptcha-response', token);
 
@@ -328,26 +328,40 @@ const form = document.getElementById('contact-form');
           }
         };
 
-        xhr.onreadystatechange = function(){
-          if (xhr.readyState === 4) {
-            submitBtn.disabled = false;
-            try {
-              const resp = JSON.parse(xhr.responseText);
-              if (xhr.status >= 200 && xhr.status < 300 && resp.ok) {
-                statusEl.textContent = resp.message || 'Sent!'; statusEl.style.color = '#0a8a00';
-                // clear draft + files
-                ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline']
-                  .forEach(id => localStorage.removeItem('draft_'+id));
-                window.state.files = []; renderPreviews();
-                pi.style.width = '100%'; pt.textContent = '100%';
-              } else {
-                throw new Error(resp.message || 'Error');
-              }
-            } catch (err) {
-              statusEl.textContent = 'Submission failed. Please try again.'; statusEl.style.color = '#a20000';
-            }
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState !== 4) return;
+
+          submitBtn.disabled = false;
+
+          const okHttp = xhr.status >= 200 && xhr.status < 300;
+
+          let resp = null;
+          try {
+            resp = JSON.parse(xhr.responseText);
+          } catch (e) {
+            // If server returned non-JSON but HTTP is OK, still treat as success
+            if (okHttp) resp = { ok: true, message: "Sent!" };
+          }
+
+          if (okHttp && resp && resp.ok) {
+            statusEl.textContent = resp.message || "Sent!";
+            statusEl.style.color = "#0a8a00";
+
+            // clear draft + files
+            ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline']
+              .forEach(id => localStorage.removeItem('draft_'+id));
+
+            state.files = [];
+            renderPreviews();
+
+            pi.style.width = '100%';
+            pt.textContent = '100%';
+          } else {
+            statusEl.textContent = (resp && resp.message) ? resp.message : "Submission failed. Please try again.";
+            statusEl.style.color = "#a20000";
           }
         };
+
 
         xhr.send(fd);
       }).catch(function(){
