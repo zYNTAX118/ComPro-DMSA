@@ -60,6 +60,25 @@ header {
 /************************************
   CUSTOM NAVBAR OVERRIDES
 *************************************/
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  background-color: #FF0000;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+  background-color: #FF0000;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
 .custom-blur-navbar {
   background-color: rgba(255, 255, 255, 0.4) !important; /* Transparent background */
   backdrop-filter: blur(15px) !important;
