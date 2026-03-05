@@ -731,3 +731,133 @@ footer {
   }
  }
 
+/* ============================= */
+/* ORG CHART CONTAINER          */
+/* ============================= */
+
+.aboutus-box{
+  background:#ff0000;
+  padding:30px;
+  overflow-x:auto;
+}
+
+/* White panel so chart is readable */
+.aboutus-box .org-chart{
+  margin-top:25px;
+  background:#ffffff;
+  border-radius:12px;
+  padding:30px 20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
+  display:flex;
+  justify-content:center;
+}
+
+/* Prevent chart from compressing */
+.aboutus-box .org-chart .tree{
+  min-width:1100px;
+}
+
+
+/* ============================= */
+/* TREE STRUCTURE                */
+/* ============================= */
+
+.org-chart ul{
+  padding-top:20px;
+  position:relative;
+  display:flex;
+  justify-content:center;
+}
+
+.org-chart li{
+  list-style:none;
+  text-align:center;
+  position:relative;
+  padding:20px 10px 0 10px;
+}
+
+
+/* ============================= */
+/* CONNECTOR LINES               */
+/* ============================= */
+
+.org-chart li::before,
+.org-chart li::after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:50%;
+  border-top:2px solid #222;
+  width:50%;
+  height:20px;
+}
+
+.org-chart li::after{
+  right:auto;
+  left:50%;
+  border-left:2px solid #222;
+}
+
+.org-chart li:only-child::before,
+.org-chart li:only-child::after{
+  display:none;
+}
+
+.org-chart li:first-child::before{
+  border:none;
+}
+
+.org-chart li:last-child::after{
+  border:none;
+}
+
+/* vertical connector */
+.org-chart ul ul::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:50%;
+  border-left:2px solid #222;
+  width:0;
+  height:20px;
+}
+
+
+/* ============================= */
+/* NODE BOXES                    */
+/* ============================= */
+
+.org-chart .node{
+  border:2px solid #222;
+  display:inline-block;
+  min-width:170px;
+  background:#ffffff;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+/* top title section */
+.org-chart .title{
+  background:#e8c2c5;
+  padding:8px;
+  font-weight:bold;
+  border-bottom:2px solid #222;
+  text-transform:uppercase;
+  font-size:14px;
+  color:#000;
+}
+
+/* bottom name section */
+.org-chart .name{
+  padding:10px;
+  font-size:14px;
+  color:#000;
+}
+
+
+/* ============================= */
+/* REMOVE TEXT SELECTION BLUE    */
+/* ============================= */
+
+.org-chart ::selection{
+  background:transparent;
+}
