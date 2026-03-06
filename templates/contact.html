@@ -2,89 +2,317 @@
 {% block content %}
 
 <style>
-/* ==== Base typography ==== */
-body { font-family: "Segoe UI", Roboto, sans-serif; line-height: 1.45; }
+body {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  line-height: 1.45;
+}
 
-/* ==== Section container ==== */
 .container {
-  max-width: 720px;
+  max-width: 1080px;
   margin: 120px auto 60px;
-  padding: 32px 40px;
-  background: rgba(255, 255, 255, 0.94);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 34px 38px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.08);
 }
 
-/* ==== Headings ==== */
-.container h2 { margin-top: 8px; font-size: 32px; text-align: center; }
+.page-title {
+  margin: 0 0 8px;
+  font-size: 34px;
+  text-align: center;
+}
 
-/* ==== Flash message ==== */
+.page-subtitle {
+  margin: 0 0 24px;
+  text-align: center;
+  color: #475569;
+  font-size: 15px;
+}
+
+.address-block {
+  margin: 0 auto 26px;
+  text-align: center;
+  color: #334155;
+  font-size: 14px;
+}
+
 .flash-messages {
-  margin-bottom: 20px; padding: 12px 16px; border-radius: 6px;
-  background: #ffeaea; color: #b42424; font-weight: 600; text-align: center;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: #ffeaea;
+  color: #b42424;
+  font-weight: 600;
+  text-align: center;
 }
 
-/* ==== Form layout ==== */
-.contact-form { display: flex; flex-direction: column; gap: 18px; margin-top: 16px; }
-.contact-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.contact-form .form-group { display: flex; flex-direction: column; }
-
-.contact-form label { margin-bottom: 6px; font-weight: 600; }
-
-.contact-form input[type="text"],
-.contact-form input[type="email"],
-.contact-form input[type="tel"],
-.contact-form input[type="date"],
-.contact-form input[type="number"],
-.contact-form textarea,
-.contact-form select {
-  padding: 12px 14px; font-size: 16px; border: 1px solid #cbd5e1; border-radius: 4px;
-  outline: none; transition: border-color 0.2s;
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
-.contact-form input:focus,
-.contact-form textarea:focus,
-.contact-form select:focus { border-color: #0d6efd; }
 
-.contact-form textarea { min-height: 140px; resize: vertical; }
+.form-section {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px 18px 18px;
+  background: #ffffff;
+}
 
-/* ==== Submit button ==== */
-.contact-form .btn {
-  align-self: flex-start; background: #0d6efd; color: #fff; border: none;
-  padding: 12px 28px; font-size: 16px; font-weight: 600; border-radius: 6px; cursor: pointer;
+.form-section h3 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.form-section p.section-note {
+  margin: -6px 0 16px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13,110,253,0.08);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.items-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.toolbar-note {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.btn-secondary,
+.btn-danger,
+.btn-primary {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
   transition: transform .02s ease, opacity .2s ease;
 }
-.contact-form .btn:active { transform: translateY(1px); }
-.contact-form .btn[disabled] { opacity: .6; cursor: not-allowed; }
 
-/* ==== Dropzone ==== */
+.btn-primary {
+  background: #0d6efd;
+  color: #fff;
+  padding: 12px 28px;
+  font-size: 16px;
+}
+
+.btn-secondary {
+  background: #eaf2ff;
+  color: #0d4fd8;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.btn-danger {
+  background: #ffeaea;
+  color: #a20000;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active {
+  transform: translateY(1px);
+}
+
+.btn-primary[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.inquiry-items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.item-card {
+  border: 1px solid #dbe5f0;
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fbff;
+}
+
+.item-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.item-card-title {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.item-grid-top {
+  display: grid;
+  grid-template-columns: 100px 110px 1fr 1fr;
+  gap: 12px;
+}
+
+.item-grid-bottom {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
 .dropzone {
-  border: 2px dashed #9db4d3; border-radius: 8px; padding: 18px; text-align: center;
-  background: #f8fbff; transition: background .2s, border-color .2s;
+  border: 2px dashed #9db4d3;
+  border-radius: 10px;
+  padding: 18px;
+  text-align: center;
+  background: #f8fbff;
+  transition: background .2s, border-color .2s;
 }
-.dropzone.dragover { background: #eef5ff; border-color: #0d6efd; }
-.dropzone p { margin: 0; }
 
-/* ==== Preview list ==== */
-.preview-list { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 8px; }
+.dropzone.dragover {
+  background: #eef5ff;
+  border-color: #0d6efd;
+}
+
+.dropzone p {
+  margin: 0;
+}
+
+.preview-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 .preview-item {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  background: #fff;
 }
-.preview-name { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.preview-remove { border: none; background: #ffeaea; color: #a20000; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
 
-/* ==== Progress bar ==== */
-.progress-wrap { display: none; margin-top: 6px; }
+.preview-name {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.progress-wrap {
+  display: none;
+  margin-top: 8px;
+}
+
 .progress {
-  width: 100%; height: 10px; background: #edf2f7; border-radius: 6px; overflow: hidden;
+  width: 100%;
+  height: 10px;
+  background: #edf2f7;
+  border-radius: 6px;
+  overflow: hidden;
 }
-.progress-inner { width: 0%; height: 100%; background: #0d6efd; }
 
-/* reCAPTCHA badge on top of footer collage */
-.grecaptcha-badge { z-index: 9999; bottom: 12px !important; right: 12px !important; }
+.progress-inner {
+  width: 0%;
+  height: 100%;
+  background: #0d6efd;
+}
+
+.submit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+small.helper {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.grecaptcha-badge {
+  z-index: 9999;
+  bottom: 12px !important;
+  right: 12px !important;
+}
+
+@media (max-width: 900px) {
+  .form-row,
+  .form-row-3,
+  .item-grid-top,
+  .item-grid-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    margin: 110px 14px 40px;
+    padding: 24px 18px;
+  }
+}
 </style>
 
-<!-- reCAPTCHA -->
 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}"></script>
 <script>
 grecaptcha.ready(function () {
@@ -95,11 +323,17 @@ grecaptcha.ready(function () {
 });
 </script>
 
-<div class="container" style="margin-top:140px;">
-  <h2>Contact Us</h2>
-  <h6>Address:</h6>
-  <h6>Holland Village Lippo Office Tower, 37th floor.</h6>
-  <h6>Jl. Letjen. Suprapto Kav 60 no. 1, Cempaka Putih Timur.</h6>
+<div class="container">
+  <h2 class="page-title">Submit Inquiry</h2>
+  <p class="page-subtitle">
+    Please fill in your contact details and inquiry items below. This format is designed to make quotation requests easier and clearer.
+  </p>
+
+  <div class="address-block">
+    <div><strong>PT. Dwi Mandiri Sejahtera Agung</strong></div>
+    <div>Holland Village Lippo Office Tower, 37th Floor</div>
+    <div>Jl. Letjen. Suprapto Kav 60 No. 1, Cempaka Putih Timur</div>
+  </div>
 
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -113,96 +347,252 @@ grecaptcha.ready(function () {
 
   <form id="contact-form" method="POST" action="{{ url_for('contact') }}" enctype="multipart/form-data" class="contact-form">
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+    <input type="hidden" id="inquiry_items_json" name="inquiry_items_json">
 
-    <!-- Basic info -->
-    <div class="form-row">
-      <div class="form-group">
-        <label for="name">Name *</label>
-        <input type="text" id="name" name="name" placeholder="Your name" required>
+    <div class="form-section">
+      <h3>1. Contact Information</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Contact Name *</label>
+          <input type="text" id="name" name="name" placeholder="e.g. John Tan" required>
+        </div>
+        <div class="form-group">
+          <label for="position">Position / Department</label>
+          <input type="text" id="position" name="position" placeholder="e.g. Procurement Engineer">
+        </div>
       </div>
-      <div class="form-group">
-        <label for="email">Email *</label>
-        <input type="email" id="email" name="email" placeholder="you@company.com" required>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="company">Company *</label>
+          <input type="text" id="company" name="company" placeholder="e.g. PT Example Indonesia" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" placeholder="you@company.com" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="phone">Phone / WhatsApp</label>
+          <input type="tel" id="phone" name="phone" placeholder="+62 ...">
+        </div>
+        <div class="form-group">
+          <label for="end_user">End User / Plant / Site</label>
+          <input type="text" id="end_user" name="end_user" placeholder="e.g. Pertamina RU IV">
+        </div>
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label for="company">Company</label>
-        <input type="text" id="company" name="company" placeholder="Company Inc.">
+    <div class="form-section">
+      <h3>2. Inquiry Information</h3>
+      <p class="section-note">You can add multiple inquiry items, similar to how clients usually send quotation requests.</p>
+
+      <div class="form-row-3">
+        <div class="form-group">
+          <label for="brand">Requested Brand / Principal</label>
+          <input type="text" id="brand" name="brand" placeholder="e.g. Ashcroft / Yokogawa / Wika">
+        </div>
+        <div class="form-group">
+          <label for="category">Category</label>
+          <input type="text" id="category" name="category" placeholder="Valve / Sensor / Controller / Gauge">
+        </div>
+        <div class="form-group">
+          <label for="inquiry_type">Inquiry Type</label>
+          <select id="inquiry_type" name="inquiry_type">
+            <option value="standard">Standard RFQ</option>
+            <option value="bulk">Bulk Order</option>
+            <option value="service">Service / Maintenance</option>
+            <option value="urgent">Urgent Requirement</option>
+          </select>
+        </div>
       </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="project_name">Project / Reference</label>
+          <input type="text" id="project_name" name="project_name" placeholder="e.g. Shutdown 2026 / Requisition No. ...">
+        </div>
+        <div class="form-group">
+          <label for="deadline">Required Delivery / Needed By</label>
+          <input type="date" id="deadline" name="deadline">
+        </div>
+      </div>
+
+      <div class="items-toolbar">
+        <div class="toolbar-note">Fill at least one inquiry item.</div>
+        <button type="button" class="btn-secondary" id="add-item-btn">+ Add Item</button>
+      </div>
+
+      <div id="inquiry-items" class="inquiry-items"></div>
+    </div>
+
+    <div class="form-section">
+      <h3>3. Notes & Attachments</h3>
+
       <div class="form-group">
-        <label for="phone">Phone / WhatsApp</label>
-        <input type="tel" id="phone" name="phone" placeholder="+62 ...">
+        <label for="message">Additional Notes / Special Requirements</label>
+        <textarea id="message" name="message" placeholder="Optional notes such as requested certificate, datasheet request, urgency, delivery point, commercial terms, etc."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Attachments (PDF / DOC / Images, multiple)</label>
+        <div id="dropzone" class="dropzone">
+          <p><strong>Drag & drop</strong> files here, or click to browse.</p>
+          <small class="helper">Examples: datasheet, inquiry letter, marked-up spec sheet, product image.</small>
+          <input id="file-input" type="file" name="attachments" multiple
+                 accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt,.xls,.xlsx" style="display:none;">
+        </div>
+
+        <div id="preview-list" class="preview-list"></div>
+
+        <div class="progress-wrap" id="progress-wrap">
+          <div class="progress"><div class="progress-inner" id="progress-inner"></div></div>
+          <small id="progress-text"></small>
+        </div>
       </div>
     </div>
 
-    <!-- Product prefillable -->
-    <div class="form-row">
-      <div class="form-group">
-        <label for="product">Product</label>
-        <input type="text" id="product" name="product" placeholder="(Auto-filled from catalogue link)">
-      </div>
-      <div class="form-group">
-        <label for="category">Category</label>
-        <input type="text" id="category" name="category" placeholder="Valve / Sensor / Controller ...">
-      </div>
+    <div class="submit-row">
+      <button type="submit" class="btn-primary" id="submit-btn">Submit Inquiry</button>
+      <small id="form-status"></small>
     </div>
-
-    <!-- Inquiry type + dynamic fields -->
-    <div class="form-row">
-      <div class="form-group">
-        <label for="inquiry_type">Inquiry Type</label>
-        <select id="inquiry_type" name="inquiry_type">
-          <option value="standard">Standard</option>
-          <option value="bulk">Bulk Order</option>
-          <option value="service">Service / Maintenance</option>
-        </select>
-      </div>
-      <div class="form-group bulk-only" style="display:none;">
-        <label for="quantity">Estimated Quantity</label>
-        <input type="number" id="quantity" name="quantity" min="1" placeholder="e.g., 50">
-      </div>
-    </div>
-    <div class="form-row bulk-only" style="display:none;">
-      <div class="form-group">
-        <label for="deadline">Delivery Deadline</label>
-        <input type="date" id="deadline" name="deadline">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="message">Message *</label>
-      <textarea id="message" name="message" placeholder="Tell us about your needs…" rows="5" required></textarea>
-    </div>
-
-    <!-- Drag & drop multi-file upload -->
-    <div class="form-group">
-      <label>Attachments (PDF/Images, multiple)</label>
-      <div id="dropzone" class="dropzone">
-        <p><strong>Drag & drop</strong> files here, or click to browse.</p>
-        <input id="file-input" type="file" name="attachments" multiple
-               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt" style="display:none;">
-      </div>
-      <div id="preview-list" class="preview-list"></div>
-
-      <div class="progress-wrap" id="progress-wrap">
-        <div class="progress"><div class="progress-inner" id="progress-inner"></div></div>
-        <small id="progress-text"></small>
-      </div>
-    </div>
-
-    <button type="submit" class="btn" id="submit-btn">Send Message</button>
-    <small id="form-status" style="margin-left:12px;"></small>
   </form>
 </div>
 
 <script>
-// ---- Simple state for selected files (so we can remove before submit)
-const state = { files: [] };
+const state = {
+  files: [],
+  items: []
+};
+
+const form = document.getElementById('contact-form');
+const inquiryItemsWrap = document.getElementById('inquiry-items');
+const addItemBtn = document.getElementById('add-item-btn');
+const inquiryItemsJson = document.getElementById('inquiry_items_json');
+
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('file-input');
 const previewList = document.getElementById('preview-list');
+
+const submitBtn = document.getElementById('submit-btn');
+const statusEl = document.getElementById('form-status');
+const pw = document.getElementById('progress-wrap');
+const pi = document.getElementById('progress-inner');
+const pt = document.getElementById('progress-text');
+
+function createEmptyItem(prefill = {}) {
+  return {
+    qty: prefill.qty || '',
+    unit: prefill.unit || 'PCS',
+    product: prefill.product || '',
+    description: prefill.description || '',
+    remarks: prefill.remarks || ''
+  };
+}
+
+function renderItems() {
+  inquiryItemsWrap.innerHTML = '';
+
+  state.items.forEach((item, index) => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
+
+    card.innerHTML = `
+      <div class="item-card-header">
+        <div class="item-card-title">Item ${index + 1}</div>
+        ${state.items.length > 1 ? `<button type="button" class="btn-danger" data-remove-index="${index}">Remove</button>` : ''}
+      </div>
+
+      <div class="item-grid-top">
+        <div class="form-group">
+          <label>Qty</label>
+          <input type="number" min="1" data-field="qty" data-index="${index}" value="${escapeHtml(item.qty)}" placeholder="1">
+        </div>
+
+        <div class="form-group">
+          <label>Unit</label>
+          <input type="text" data-field="unit" data-index="${index}" value="${escapeHtml(item.unit)}" placeholder="PCS">
+        </div>
+
+        <div class="form-group">
+          <label>Product / Tag</label>
+          <input type="text" data-field="product" data-index="${index}" value="${escapeHtml(item.product)}" placeholder="e.g. Pressure Gauge">
+        </div>
+
+        <div class="form-group">
+          <label>Remarks</label>
+          <input type="text" data-field="remarks" data-index="${index}" value="${escapeHtml(item.remarks)}" placeholder="Optional">
+        </div>
+      </div>
+
+      <div class="item-grid-bottom">
+        <div class="form-group">
+          <label>Detailed Description / Specs *</label>
+          <textarea data-field="description" data-index="${index}" placeholder="Example:
+Range: 0–16 kg/cm2
+Dial size: 100 mm
+Accuracy: ±1% F.S.
+Connection: 1/2 NPT bottom
+Material: SS316
+Any model / type / process details...">${escapeHtml(item.description)}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Quick Guide</label>
+          <div style="padding:12px 14px;border:1px solid #dbe5f0;border-radius:8px;background:#fff;font-size:13px;color:#475569;line-height:1.5;">
+            Enter the actual line item detail as your client normally sends it:
+            <br>• range
+            <br>• model
+            <br>• size
+            <br>• material
+            <br>• connection
+            <br>• certificates
+            <br>• special request
+          </div>
+        </div>
+      </div>
+    `;
+
+    inquiryItemsWrap.appendChild(card);
+  });
+
+  inquiryItemsWrap.querySelectorAll('[data-remove-index]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.getAttribute('data-remove-index'));
+      state.items.splice(idx, 1);
+      renderItems();
+      saveItemsDraft();
+    });
+  });
+
+  inquiryItemsWrap.querySelectorAll('[data-field]').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const idx = Number(e.target.getAttribute('data-index'));
+      const field = e.target.getAttribute('data-field');
+      state.items[idx][field] = e.target.value;
+      saveItemsDraft();
+    });
+  });
+
+  inquiryItemsJson.value = JSON.stringify(state.items);
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+addItemBtn.addEventListener('click', () => {
+  state.items.push(createEmptyItem());
+  renderItems();
+  saveItemsDraft();
+});
 
 function renderPreviews() {
   previewList.innerHTML = '';
@@ -211,25 +601,32 @@ function renderPreviews() {
     row.className = 'preview-item';
     const name = document.createElement('div');
     name.className = 'preview-name';
-    name.textContent = `${f.name} (${Math.round(f.size/1024)} KB)`;
+    name.textContent = `${f.name} (${Math.round(f.size / 1024)} KB)`;
+
     const remove = document.createElement('button');
-    remove.className = 'preview-remove';
+    remove.className = 'btn-danger';
     remove.type = 'button';
     remove.textContent = 'Remove';
-    remove.onclick = () => { state.files.splice(idx,1); renderPreviews(); };
-    row.appendChild(name); row.appendChild(remove);
+    remove.onclick = () => {
+      state.files.splice(idx, 1);
+      renderPreviews();
+    };
+
+    row.appendChild(name);
+    row.appendChild(remove);
     previewList.appendChild(row);
   });
 }
 
-// Click to open file picker
 dropzone.addEventListener('click', () => fileInput.click());
-
-// Drop handlers
-dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropzone.classList.add('dragover');
+});
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
 dropzone.addEventListener('drop', e => {
-  e.preventDefault(); dropzone.classList.remove('dragover');
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
   if (e.dataTransfer.files?.length) {
     state.files.push(...e.dataTransfer.files);
     renderPreviews();
@@ -243,133 +640,179 @@ fileInput.addEventListener('change', e => {
   }
 });
 
-// Dynamic fields (Bulk)
-const inquiryType = document.getElementById('inquiry_type');
-const bulkOnlyEls = Array.from(document.querySelectorAll('.bulk-only'));
-function updateBulkVisibility() {
-  const isBulk = inquiryType.value === 'bulk';
-  bulkOnlyEls.forEach(el => el.style.display = isBulk ? '' : 'none');
-}
-inquiryType.addEventListener('change', updateBulkVisibility);
-updateBulkVisibility();
-
-// Prefill from URL (?product=...&category=...)
-(function prefillFromURL(){
+(function prefillFromURL() {
   const params = new URLSearchParams(window.location.search);
-  const map = {
-    product: document.getElementById('product'),
-    category: document.getElementById('category'),
+  const firstProduct = params.get('product') || '';
+  const firstCategory = params.get('category') || '';
+
+  const simpleMap = {
     name: document.getElementById('name'),
-    email: document.getElementById('email')
+    email: document.getElementById('email'),
+    category: document.getElementById('category'),
+    brand: document.getElementById('brand')
   };
-  for (const key in map) {
+
+  for (const key in simpleMap) {
     const val = params.get(key);
-    if (val && map[key]) map[key].value = decodeURIComponent(val);
+    if (val && simpleMap[key]) simpleMap[key].value = decodeURIComponent(val);
   }
+
+  if (!state.items.length) {
+    state.items.push(createEmptyItem({
+      product: firstProduct,
+      description: firstCategory ? `Category: ${firstCategory}` : ''
+    }));
+  }
+  renderItems();
 })();
 
-// Save minimal progress locally (so refresh doesn't kill effort)
-(function loadDraft(){
-  const ids = ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline'];
+(function loadDraft() {
+  const ids = ['name','position','company','email','phone','end_user','brand','category','inquiry_type','project_name','deadline','message'];
   ids.forEach(id => {
     const el = document.getElementById(id);
-    const saved = localStorage.getItem('draft_'+id);
+    const saved = localStorage.getItem('draft_' + id);
     if (saved && el && !el.value) el.value = saved;
   });
+
+  try {
+    const savedItems = JSON.parse(localStorage.getItem('draft_inquiry_items') || '[]');
+    if (Array.isArray(savedItems) && savedItems.length) {
+      state.items = savedItems;
+    }
+  } catch(e) {}
+
+  if (!state.items.length) {
+    state.items.push(createEmptyItem());
+  }
+
+  renderItems();
 })();
-function persistDraft(e){
+
+function persistDraft(e) {
   const el = e.target;
   if (!el.id) return;
-  localStorage.setItem('draft_'+el.id, el.value);
+  localStorage.setItem('draft_' + el.id, el.value);
 }
-document.getElementById('contact-form').addEventListener('input', persistDraft);
+form.addEventListener('input', persistDraft);
 
-// XHR submit with upload progress
-const form = document.getElementById('contact-form');
-  const submitBtn = document.getElementById('submit-btn');
-  const statusEl = document.getElementById('form-status');
-  const pw = document.getElementById('progress-wrap');
-  const pi = document.getElementById('progress-inner');
-  const pt = document.getElementById('progress-text');
+function saveItemsDraft() {
+  localStorage.setItem('draft_inquiry_items', JSON.stringify(state.items));
+  inquiryItemsJson.value = JSON.stringify(state.items);
+}
 
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
+function validateInquiryItems() {
+  const validItems = state.items.filter(item =>
+    (item.qty || item.product || item.description || item.remarks)
+  );
 
-    if (!form.name.value || !form.email.value || !form.message.value) {
-      statusEl.textContent = 'Please fill required fields.'; statusEl.style.color = '#a20000';
-      return;
+  if (!validItems.length) {
+    return 'Please add at least one inquiry item.';
+  }
+
+  for (const [i, item] of validItems.entries()) {
+    if (!String(item.description || '').trim()) {
+      return `Please fill the detailed description/specs for Item ${i + 1}.`;
     }
+  }
 
-    submitBtn.disabled = true;
-    statusEl.textContent = 'Verifying…';
-    statusEl.style.color = '#333';
+  state.items = validItems;
+  inquiryItemsJson.value = JSON.stringify(validItems);
+  saveItemsDraft();
+  return '';
+}
 
-    // 1) Get a brand-new token JUST BEFORE sending
-    grecaptcha.ready(function(){
-      grecaptcha.execute('{{ site_key }}', { action: 'contact' }).then(function(token){
-        // 2) Build fresh FormData after we have the token
-        const fd = new FormData(form);
-        // Append selected files from your state
-        (state.files || []).forEach(f => fd.append('attachments', f));
-        // Put token in the form
-        fd.set('g-recaptcha-response', token);
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
 
-        // 3) Now send XHR with progress
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', form.action, true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  const itemError = validateInquiryItems();
+  if (itemError) {
+    statusEl.textContent = itemError;
+    statusEl.style.color = '#a20000';
+    return;
+  }
 
-        pw.style.display = 'block'; pi.style.width = '0%'; pt.textContent = '0%';
-        xhr.upload.onprogress = function(e){
-          if (e.lengthComputable) {
-            const pct = Math.round((e.loaded / e.total) * 100);
-            pi.style.width = pct + '%';
-            pt.textContent = pct + '%';
-          }
-        };
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const companyInput = document.getElementById('company');
 
-        xhr.onreadystatechange = function () {
-          if (xhr.readyState !== 4) return;
+  if (!nameInput.value.trim() || !emailInput.value.trim() || !companyInput.value.trim()) {
+    statusEl.textContent = 'Please fill the required contact fields.';
+    statusEl.style.color = '#a20000';
+    return;
+  }
 
-          submitBtn.disabled = false;
+  submitBtn.disabled = true;
+  statusEl.textContent = 'Verifying…';
+  statusEl.style.color = '#333';
 
-          const okHttp = xhr.status >= 200 && xhr.status < 300;
+  grecaptcha.ready(function() {
+    grecaptcha.execute('{{ site_key }}', { action: 'contact' }).then(function(token) {
+      const fd = new FormData(form);
 
-          let resp = null;
-          try {
-            resp = JSON.parse(xhr.responseText);
-          } catch (e) {
-            // If server returned non-JSON but HTTP is OK, still treat as success
-            if (okHttp) resp = { ok: true, message: "Sent!" };
-          }
+      state.files.forEach(f => fd.append('attachments', f));
+      fd.set('g-recaptcha-response', token);
+      fd.set('inquiry_items_json', JSON.stringify(state.items));
 
-          if (okHttp && resp && resp.ok) {
-            statusEl.textContent = resp.message || "Sent!";
-            statusEl.style.color = "#0a8a00";
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', form.action, true);
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
-            // clear draft + files
-            ['name','email','company','phone','product','category','message','inquiry_type','quantity','deadline']
-              .forEach(id => localStorage.removeItem('draft_'+id));
+      pw.style.display = 'block';
+      pi.style.width = '0%';
+      pt.textContent = '0%';
 
-            state.files = [];
-            renderPreviews();
+      xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+          const pct = Math.round((e.loaded / e.total) * 100);
+          pi.style.width = pct + '%';
+          pt.textContent = pct + '%';
+        }
+      };
 
-            pi.style.width = '100%';
-            pt.textContent = '100%';
-          } else {
-            statusEl.textContent = (resp && resp.message) ? resp.message : "Submission failed. Please try again.";
-            statusEl.style.color = "#a20000";
-          }
-        };
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
 
-
-        xhr.send(fd);
-      }).catch(function(){
         submitBtn.disabled = false;
-        statusEl.textContent = 'reCAPTCHA failed to start. Please try again.'; statusEl.style.color = '#a20000';
-      });
+
+        const okHttp = xhr.status >= 200 && xhr.status < 300;
+        let resp = null;
+
+        try {
+          resp = JSON.parse(xhr.responseText);
+        } catch (e) {
+          if (okHttp) resp = { ok: true, message: 'Inquiry sent successfully.' };
+        }
+
+        if (okHttp && resp && resp.ok) {
+          statusEl.textContent = resp.message || 'Inquiry sent successfully.';
+          statusEl.style.color = '#0a8a00';
+
+          ['name','position','company','email','phone','end_user','brand','category','inquiry_type','project_name','deadline','message']
+            .forEach(id => localStorage.removeItem('draft_' + id));
+          localStorage.removeItem('draft_inquiry_items');
+
+          state.files = [];
+          state.items = [createEmptyItem()];
+          renderPreviews();
+          renderItems();
+
+          form.reset();
+          pi.style.width = '100%';
+          pt.textContent = '100%';
+        } else {
+          statusEl.textContent = (resp && resp.message) ? resp.message : 'Submission failed. Please try again.';
+          statusEl.style.color = '#a20000';
+        }
+      };
+
+      xhr.send(fd);
+    }).catch(function() {
+      submitBtn.disabled = false;
+      statusEl.textContent = 'reCAPTCHA failed to start. Please try again.';
+      statusEl.style.color = '#a20000';
     });
   });
+});
 </script>
 
 {% endblock %}

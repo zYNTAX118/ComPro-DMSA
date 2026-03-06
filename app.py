@@ -130,12 +130,6 @@ def send_email(to_emails, subject, body, attachments=None):
     logging.info(f"✉️  Sent via SMTP to {to_emails}")
 
 def build_inquiry_pdf(data: dict, message: str, logo_path: str | None = None) -> bytes:
-    """
-    Returns PDF bytes summarizing an inquiry.
-    Prefers ReportLab (nice tables & wrapping). If ReportLab is not installed,
-    falls back to a small, hand-crafted PDF so emails still get an attachment.
-    """
-    # 1) Try ReportLab first (best look)
     try:
         from reportlab.lib.pagesizes import A4
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
@@ -145,60 +139,96 @@ def build_inquiry_pdf(data: dict, message: str, logo_path: str | None = None) ->
         buf = BytesIO()
         doc = SimpleDocTemplate(
             buf, pagesize=A4, title="Inquiry Confirmation", author="PT. DMSA",
-            leftMargin=36, rightMargin=36, topMargin=36, bottomMargin=36
+            leftMargin=30, rightMargin=30, topMargin=30, bottomMargin=30
         )
 
         styles = getSampleStyleSheet()
         styles.add(ParagraphStyle(name="Small", fontSize=9, leading=12, textColor=colors.grey))
-        styles.add(ParagraphStyle(name="Body",  fontSize=11, leading=15))
-        styles.add(ParagraphStyle(name="Label", fontSize=10, leading=13, textColor=colors.HexColor("#444")))
+        styles.add(ParagraphStyle(name="Body", fontSize=10, leading=13))
+        styles.add(ParagraphStyle(name="Label", fontSize=10, leading=12, textColor=colors.HexColor("#444")))
 
         story = []
-        # Optional logo
+
         if logo_path and os.path.exists(logo_path):
             try:
-                story.append(Image(logo_path, width=72, height=72))
+                story.append(Image(logo_path, width=64, height=64))
                 story.append(Spacer(1, 6))
             except Exception:
                 pass
 
         story.append(Paragraph("Inquiry Confirmation", styles["Title"]))
-        story.append(Paragraph("Thank you for your inquiry. Here is a summary of your request.", styles["Small"]))
+        story.append(Paragraph("Thank you for your inquiry. Below is the summary of your request.", styles["Small"]))
         story.append(Spacer(1, 12))
 
-        # Key-value rows in a 2-col table
-        rows = []
-        def row(label, key):
-            val = data.get(key) or "-"
-            rows.append([f"<b>{label}</b>", Paragraph(str(val), styles["Body"])])
+        contact_rows = []
+        def row(label, value):
+            contact_rows.append([f"<b>{label}</b>", Paragraph(str(value or "-"), styles["Body"])])
 
-        row("Reference No.", "ticket_id")
-        row("Submitted On", "submitted_on")
-        row("Name", "name")
-        row("Email", "email")
-        row("Phone / WhatsApp", "phone")
-        row("Company", "company")
-        row("Product", "product")
-        row("Category", "category")
-        row("Inquiry Type", "inquiry_type")
-        row("Quantity", "quantity")
-        row("Delivery Deadline", "deadline")
+        row("Reference No.", data.get("ticket_id"))
+        row("Submitted On", data.get("submitted_on"))
+        row("Name", data.get("name"))
+        row("Position", data.get("position"))
+        row("Company", data.get("company"))
+        row("Email", data.get("email"))
+        row("Phone / WhatsApp", data.get("phone"))
+        row("End User / Site", data.get("end_user"))
+        row("Brand / Principal", data.get("brand"))
+        row("Category", data.get("category"))
+        row("Inquiry Type", data.get("inquiry_type"))
+        row("Project / Reference", data.get("project_name"))
+        row("Required Delivery", data.get("deadline"))
 
-        tbl = Table(rows, colWidths=[140, 360])
-        tbl.setStyle(TableStyle([
+        contact_tbl = Table(contact_rows, colWidths=[150, 360])
+        contact_tbl.setStyle(TableStyle([
             ("BOX", (0,0), (-1,-1), 0.75, colors.HexColor("#e2e8f0")),
             ("INNERGRID", (0,0), (-1,-1), 0.25, colors.HexColor("#e2e8f0")),
             ("VALIGN", (0,0), (-1,-1), "TOP"),
-            ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#f7fafc")),
+            ("BACKGROUND", (0,0), (0,-1), colors.HexColor("#f8fafc")),
             ("LEFTPADDING", (0,0), (-1,-1), 6),
             ("RIGHTPADDING", (0,0), (-1,-1), 6),
             ("TOPPADDING", (0,0), (-1,-1), 6),
             ("BOTTOMPADDING", (0,0), (-1,-1), 6),
         ]))
-        story.append(tbl)
+        story.append(contact_tbl)
         story.append(Spacer(1, 14))
 
-        story.append(Paragraph("<b>Message</b>", styles["Label"]))
+        story.append(Paragraph("<b>Inquiry Items</b>", styles["Label"]))
+        story.append(Spacer(1, 6))
+
+        item_rows = [[
+            Paragraph("<b>No</b>", styles["Body"]),
+            Paragraph("<b>Qty</b>", styles["Body"]),
+            Paragraph("<b>Unit</b>", styles["Body"]),
+            Paragraph("<b>Product</b>", styles["Body"]),
+            Paragraph("<b>Description / Specs</b>", styles["Body"]),
+            Paragraph("<b>Remarks</b>", styles["Body"]),
+        ]]
+
+        for idx, item in enumerate(data.get("inquiry_items", []), start=1):
+            item_rows.append([
+                Paragraph(str(idx), styles["Body"]),
+                Paragraph(str(item.get("qty") or "-"), styles["Body"]),
+                Paragraph(str(item.get("unit") or "-"), styles["Body"]),
+                Paragraph(str(item.get("product") or "-"), styles["Body"]),
+                Paragraph(str(item.get("description") or "-").replace("\n", "<br/>"), styles["Body"]),
+                Paragraph(str(item.get("remarks") or "-"), styles["Body"]),
+            ])
+
+        item_tbl = Table(item_rows, colWidths=[28, 42, 46, 95, 245, 74], repeatRows=1)
+        item_tbl.setStyle(TableStyle([
+            ("BOX", (0,0), (-1,-1), 0.75, colors.HexColor("#cbd5e1")),
+            ("INNERGRID", (0,0), (-1,-1), 0.25, colors.HexColor("#cbd5e1")),
+            ("BACKGROUND", (0,0), (-1,0), colors.HexColor("#e2e8f0")),
+            ("VALIGN", (0,0), (-1,-1), "TOP"),
+            ("LEFTPADDING", (0,0), (-1,-1), 5),
+            ("RIGHTPADDING", (0,0), (-1,-1), 5),
+            ("TOPPADDING", (0,0), (-1,-1), 5),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 5),
+        ]))
+        story.append(item_tbl)
+        story.append(Spacer(1, 14))
+
+        story.append(Paragraph("<b>Additional Notes</b>", styles["Label"]))
         story.append(Paragraph((message or "-").replace("\n", "<br/>"), styles["Body"]))
         story.append(Spacer(1, 18))
 
@@ -306,23 +336,47 @@ def format_inquiry_text(data: dict, message: str, filenames: list[str] | None = 
     lines = [
         "New Inquiry",
         "------------",
-        f"Reference No.: {data.get('ticket_id','-')}",
-        f"Submitted On: {data.get('submitted_on','-')}",
-        f"Name        : {data.get('name','-')}",
-        f"Email       : {data.get('email','-')}",
-        f"Phone       : {data.get('phone','-')}",
-        f"Company     : {data.get('company','-')}",
-        f"Product     : {data.get('product','-')}",
-        f"Category    : {data.get('category','-')}",
-        f"Inquiry Type: {data.get('inquiry_type','-')}",
-        f"Quantity    : {data.get('quantity','-')}",
-        f"Deadline    : {data.get('deadline','-')}",
+        f"Reference No. : {data.get('ticket_id','-')}",
+        f"Submitted On  : {data.get('submitted_on','-')}",
+        f"Name          : {data.get('name','-')}",
+        f"Position      : {data.get('position','-')}",
+        f"Email         : {data.get('email','-')}",
+        f"Company       : {data.get('company','-')}",
+        f"Phone         : {data.get('phone','-')}",
+        f"End User      : {data.get('end_user','-')}",
+        f"Brand         : {data.get('brand','-')}",
+        f"Category      : {data.get('category','-')}",
+        f"Inquiry Type  : {data.get('inquiry_type','-')}",
+        f"Project Ref   : {data.get('project_name','-')}",
+        f"Deadline      : {data.get('deadline','-')}",
         "",
-        "Message:",
+        "Inquiry Items:",
+    ]
+
+    items = data.get("inquiry_items") or []
+    if items:
+        for i, item in enumerate(items, start=1):
+            lines += [
+                f"  Item {i}",
+                f"    Qty         : {item.get('qty','-')}",
+                f"    Unit        : {item.get('unit','-')}",
+                f"    Product     : {item.get('product','-')}",
+                f"    Description : {item.get('description','-')}",
+                f"    Remarks     : {item.get('remarks','-')}",
+                ""
+            ]
+    else:
+        lines.append("  - No item details provided")
+        lines.append("")
+
+    lines += [
+        "Additional Notes:",
         message or "-",
     ]
+
     if filenames:
         lines += ["", "Uploaded files:"] + [f" - {n}" for n in filenames]
+
     return "\n".join(lines)
 
 # ───────────────────────────  Routes  ──────────────────────────
@@ -372,25 +426,54 @@ def contact():
             return redirect(url_for('contact'))
 
         # 2) Grab form fields
-        name        = request.form.get('name')
-        email       = request.form.get('email')
-        message     = request.form.get('message')
-        company     = request.form.get('company') or ""
-        phone       = request.form.get('phone') or ""
-        product     = request.form.get('product') or ""
-        category    = request.form.get('category') or ""
-        inquiry_type= request.form.get('inquiry_type') or "standard"
-        quantity    = request.form.get('quantity') or ""
-        deadline    = request.form.get('deadline') or ""
+        name = request.form.get('name', '').strip()
+        position = request.form.get('position', '').strip()
+        email = request.form.get('email', '').strip()
+        company = request.form.get('company', '').strip()
+        phone = request.form.get('phone', '').strip()
+        end_user = request.form.get('end_user', '').strip()
+        brand = request.form.get('brand', '').strip()
+        category = request.form.get('category', '').strip()
+        inquiry_type = request.form.get('inquiry_type', 'standard').strip()
+        project_name = request.form.get('project_name', '').strip()
+        deadline = request.form.get('deadline', '').strip()
+        message = request.form.get('message', '').strip()
 
-        if not (name and email and message):
-            msg = "Name, Email, and Message are required."
+        raw_items = request.form.get('inquiry_items_json', '[]')
+        try:
+            inquiry_items = json.loads(raw_items)
+            if not isinstance(inquiry_items, list):
+                inquiry_items = []
+        except Exception:
+            inquiry_items = []
+
+        clean_items = []
+        for item in inquiry_items:
+            if not isinstance(item, dict):
+                continue
+            row = {
+                "qty": str(item.get("qty", "")).strip(),
+                "unit": str(item.get("unit", "")).strip(),
+                "product": str(item.get("product", "")).strip(),
+                "description": str(item.get("description", "")).strip(),
+                "remarks": str(item.get("remarks", "")).strip(),
+            }
+            if any(row.values()):
+                clean_items.append(row)
+
+        if not (name and email and company):
+            msg = "Name, Company, and Email are required."
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return {"ok": False, "message": msg}, 400
             flash(msg, "error")
             return redirect(url_for('contact'))
 
-
+        if not clean_items:
+            msg = "Please provide at least one inquiry item."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 400
+            flash(msg, "error")
+            return redirect(url_for('contact'))
 
         # 3) Files: support both multi 'attachments' and legacy single 'attachment'
         uploaded_files = []
@@ -413,10 +496,19 @@ def contact():
         try:
             # 4) Save to Mongo
             base_payload = {
-                "name": name, "email": email, "message": message,
-                "company": company, "phone": phone,
-                "product": product, "category": category,
-                "inquiry_type": inquiry_type, "quantity": quantity, "deadline": deadline
+                "name": name,
+                "position": position,
+                "email": email,
+                "company": company,
+                "phone": phone,
+                "end_user": end_user,
+                "brand": brand,
+                "category": category,
+                "inquiry_type": inquiry_type,
+                "project_name": project_name,
+                "deadline": deadline,
+                "message": message,
+                "inquiry_items": clean_items
             }
             res = contact_submissions.insert_one(base_payload)
             ticket_id = str(res.inserted_id)
@@ -466,7 +558,7 @@ def contact():
             )
 
 
-            msg = "Your message was sent successfully. Thank you!"
+            msg = "Your request was sent successfully. Thank you!"
             if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                 return {"ok": True, "message": msg}, 200
             flash(msg, "success")
