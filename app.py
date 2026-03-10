@@ -576,5 +576,126 @@ def contact():
     return render_template('contact.html', site_key=RECAPTCHA_SITE_KEY)
 
 
+@app.route('/principals', methods=['GET', 'POST'])
+def principals():
+    if request.method == 'POST':
+        token = request.form.get("g-recaptcha-response")
+        if not token:
+            msg = "reCAPTCHA token missing – please retry."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 400
+            flash(msg, "error")
+            return redirect(url_for('principals'))
+
+        try:
+            rc = verify_recaptcha(token, request.remote_addr)
+            if not rc.get("success") or rc.get("score", 0) < RECAPTCHA_THRESHOLD or rc.get("action") != "principals":
+                logging.warning(f"reCAPTCHA failure on principals page: {rc}")
+                msg = "reCAPTCHA verification failed. Please try again."
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return {"ok": False, "message": msg}, 400
+                flash(msg, "error")
+                return redirect(url_for('principals'))
+        except Exception:
+            logging.exception("reCAPTCHA request error on principals page")
+            msg = "Unable to verify reCAPTCHA. Please try later."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 500
+            flash(msg, "error")
+            return redirect(url_for('principals'))
+
+        name = request.form.get('name', '').strip()
+        position = request.form.get('position', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+
+        company = request.form.get('company', '').strip()
+        country = request.form.get('country', '').strip()
+        website = request.form.get('website', '').strip()
+
+        product_category = request.form.get('product_category', '').strip()
+        industries = request.form.get('industries', '').strip()
+        partnership_type = request.form.get('partnership_type', '').strip()
+        message = request.form.get('message', '').strip()
+
+        if not (name and email and company and country and partnership_type):
+            msg = "Please fill the required fields."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 400
+            flash(msg, "error")
+            return redirect(url_for('principals'))
+
+        if partnership_type != "principal_manufacturer":
+            msg = "Only principal / manufacturer partnership requests are accepted."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 400
+            flash(msg, "error")
+            return redirect(url_for('principals'))
+
+        uploaded_files = []
+        filenames = []
+
+        for fs in request.files.getlist("attachments"):
+            if fs and fs.filename:
+                data = fs.read()
+                if data:
+                    uploaded_files.append({
+                        "filename": fs.filename,
+                        "data": data,
+                        "mimetype": fs.mimetype or "application/octet-stream"
+                    })
+                    filenames.append(fs.filename)
+
+        subject = "[DMSA] New Principal / Manufacturer Partnership Request"
+
+        body = f"""New Partnership Request
+
+Company: {company}
+Country: {country}
+Website: {website}
+
+Contact Person:
+Name: {name}
+Position: {position}
+Email: {email}
+Phone: {phone}
+
+Business Information:
+Main Product Category: {product_category}
+Industries Served: {industries}
+Partnership Type: {partnership_type}
+
+Additional Information:
+{message or "-"}
+
+Uploaded Files:
+{chr(10).join('- ' + f for f in filenames) if filenames else '- None'}
+"""
+
+        try:
+            send_email(
+                ADMIN_EMAILS,
+                subject,
+                body,
+                attachments=uploaded_files if uploaded_files else None
+            )
+
+            msg = "Your partnership request was sent successfully. Thank you!"
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": True, "message": msg}, 200
+            flash(msg, "success")
+
+        except Exception:
+            logging.exception("Error in /principals handler")
+            msg = "Unexpected error – please try again later."
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return {"ok": False, "message": msg}, 500
+            flash(msg, "error")
+
+        return redirect(url_for('principals'))
+
+    return render_template('principals.html', site_key=RECAPTCHA_SITE_KEY)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
