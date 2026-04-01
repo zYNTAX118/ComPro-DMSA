@@ -81,8 +81,161 @@
         </li>
       </ul>
     </div>
+
+      <!-- ── License Badges ── -->
+      <div id="license" style="margin-top:30px; display:flex; flex-wrap:wrap; gap:16px; justify-content:center;">
+
+        <!-- CCC Badge -->
+        <button onclick="openLicenseModal('modalCCC')"
+          style="display:inline-flex; align-items:center; gap:12px;
+                 background:#fff; border:2px solid #e60000; border-radius:12px;
+                 padding:12px 20px; cursor:pointer; transition:box-shadow 0.3s;
+                 font-family:'Futura',sans-serif; box-shadow:0 2px 10px rgba(0,0,0,0.12);"
+          onmouseover="this.style.boxShadow='0 6px 20px rgba(230,0,0,0.25)'"
+          onmouseout="this.style.boxShadow='0 2px 10px rgba(0,0,0,0.12)'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+               fill="none" stroke="#e60000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+          </svg>
+          <div style="text-align:left;">
+            <div style="font-size:13px; color:#888; font-weight:normal;">Government Certified · Agen</div>
+            <div style="font-size:15px; color:#1a1a1a; font-weight:bold;">STP Agen — CCC</div>
+            <div style="font-size:11px; color:#e60000;">PB UMKU: 912050773111500000015 · Click to view</div>
+          </div>
+        </button>
+
+        <!-- WIKA Badge -->
+        <button onclick="openLicenseModal('modalWIKA')"
+          style="display:inline-flex; align-items:center; gap:12px;
+                 background:#fff; border:2px solid #e60000; border-radius:12px;
+                 padding:12px 20px; cursor:pointer; transition:box-shadow 0.3s;
+                 font-family:'Futura',sans-serif; box-shadow:0 2px 10px rgba(0,0,0,0.12);"
+          onmouseover="this.style.boxShadow='0 6px 20px rgba(230,0,0,0.25)'"
+          onmouseout="this.style.boxShadow='0 2px 10px rgba(0,0,0,0.12)'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+               fill="none" stroke="#e60000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+          </svg>
+          <div style="text-align:left;">
+            <div style="font-size:13px; color:#888; font-weight:normal;">Government Certified · Distributor</div>
+            <div style="font-size:15px; color:#1a1a1a; font-weight:bold;">STP Distributor — WIKA</div>
+            <div style="font-size:11px; color:#e60000;">PB UMKU: 912050773111500000016 · Click to view</div>
+          </div>
+        </button>
+
+      </div>
+
     </div>
   </div>
+
+<!-- ── Shared Modal Styles & JS ── -->
+<style>
+.license-modal {
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,0.7); align-items:center; justify-content:center;
+}
+.license-modal-inner {
+  background:#fff; border-radius:16px; padding:24px;
+  width:92%; max-width:780px; max-height:92vh;
+  display:flex; flex-direction:column; position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,0.45);
+}
+.license-modal-header {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  margin-bottom:14px; gap:12px;
+}
+.license-modal-close {
+  background:none; border:none; font-size:26px; cursor:pointer;
+  color:#555; line-height:1; flex-shrink:0; padding:0 4px;
+}
+.license-modal-close:hover { color:#e60000; }
+.license-pdf-frame {
+  width:100%; flex:1; min-height:500px; border:1px solid #e2e8f0;
+  border-radius:8px;
+}
+.license-download-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  background:#e60000; color:#fff; border:none; border-radius:8px;
+  padding:9px 18px; font-size:14px; font-family:'Futura',sans-serif;
+  font-weight:bold; cursor:pointer; text-decoration:none; margin-top:14px;
+  transition:background 0.2s;
+}
+.license-download-btn:hover { background:#b30000; color:#fff; }
+</style>
+
+<!-- CCC Modal -->
+<div id="modalCCC" class="license-modal" onclick="if(event.target===this) closeLicenseModal('modalCCC')">
+  <div class="license-modal-inner">
+    <div class="license-modal-header">
+      <div>
+        <h4 style="margin:0 0 3px; font-family:'Futura',sans-serif; font-size:16px; color:#1a1a1a;">
+          STP Agen — Compressor Controls LLC (CCC)
+        </h4>
+        <p style="margin:0; font-size:12px; color:#888;">
+          Issued 27 Januari 2026 · Valid until 31 Juli 2026 · PB UMKU: 912050773111500000015
+        </p>
+      </div>
+      <button class="license-modal-close" onclick="closeLicenseModal('modalCCC')">&times;</button>
+    </div>
+    <iframe class="license-pdf-frame"
+            src="{{ url_for('static', filename='licenses/STP_CCC-_PT_DMSA_-_31_07_2026.pdf') }}#toolbar=1&view=FitH"
+            type="application/pdf">
+      <p>Your browser cannot display PDFs.
+        <a href="{{ url_for('static', filename='licenses/STP_CCC-_PT_DMSA_-_31_07_2026.pdf') }}">Download the PDF</a>.
+      </p>
+    </iframe>
+    <a class="license-download-btn"
+       href="{{ url_for('static', filename='licenses/STP_CCC-_PT_DMSA_-_31_07_2026.pdf') }}"
+       download="STP_Agen_CCC_DMSA.pdf">
+      &#8595; Download PDF
+    </a>
+  </div>
+</div>
+
+<!-- WIKA Modal -->
+<div id="modalWIKA" class="license-modal" onclick="if(event.target===this) closeLicenseModal('modalWIKA')">
+  <div class="license-modal-inner">
+    <div class="license-modal-header">
+      <div>
+        <h4 style="margin:0 0 3px; font-family:'Futura',sans-serif; font-size:16px; color:#1a1a1a;">
+          STP Distributor — WIKA Alexander Wiegand
+        </h4>
+        <p style="margin:0; font-size:12px; color:#888;">
+          Issued 30 Maret 2026 · Valid until 31 Desember 2027 · PB UMKU: 912050773111500000016
+        </p>
+      </div>
+      <button class="license-modal-close" onclick="closeLicenseModal('modalWIKA')">&times;</button>
+    </div>
+    <iframe class="license-pdf-frame"
+            src="{{ url_for('static', filename='licenses/STP_AGEN_WIKA_-_2026.pdf') }}#toolbar=1&view=FitH"
+            type="application/pdf">
+      <p>Your browser cannot display PDFs.
+        <a href="{{ url_for('static', filename='licenses/STP_AGEN_WIKA_-_2026.pdf') }}">Download the PDF</a>.
+      </p>
+    </iframe>
+    <a class="license-download-btn"
+       href="{{ url_for('static', filename='licenses/STP_AGEN_WIKA_-_2026.pdf') }}"
+       download="STP_Distributor_WIKA_DMSA.pdf">
+      &#8595; Download PDF
+    </a>
+  </div>
+</div>
+
+<script>
+function openLicenseModal(id) {
+  document.getElementById(id).style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeLicenseModal(id) {
+  document.getElementById(id).style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    ['modalCCC','modalWIKA'].forEach(closeLicenseModal);
+  }
+});
+</script>
 
 <div class="product-content1">
     <div class="aboutus-parallax2"></div>
