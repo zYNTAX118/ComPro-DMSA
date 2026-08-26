@@ -1,6 +1,7 @@
-import os, logging, base64, json, concurrent.futures, smtplib, requests   # ← add requests
+import os, re, logging, base64, json, concurrent.futures, smtplib, requests   # ← add requests
 from flask import Flask, request, render_template, flash, redirect, url_for, abort
 from googleapiclient.discovery import build
+from pymongo import ReturnDocument
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 from email.mime.text import MIMEText
@@ -12,7 +13,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from io import BytesIO
 load_dotenv()
-from database import contact_submissions                                 # ← your Mongo collection
+from database import contact_submissions, counters                       # ← your Mongo collections
 
 
 # ────────────────────────── Flask + config ─────────────────────────────
@@ -54,6 +55,33 @@ def verify_recaptcha(token: str, remote_ip: str | None = None) -> dict:
     if r.status_code != 200:
         raise ValueError(f"reCAPTCHA HTTP {r.status_code}")
     return r.json()
+# ◇───────────────────────────────────────────────────────────────◇
+
+
+# ◇──────────────────  Reference number generator  ────────────────◇
+def next_reference_sequence() -> int:
+    """
+    Yearly counter (000-999, wrapping) used as the #XXX suffix on inquiry
+    reference numbers. Keyed by year so it resets to 000 whenever the year
+    changes, and is incremented atomically so concurrent submissions never
+    collide.
+    """
+    year = datetime.now(ZoneInfo("Asia/Jakarta")).year
+    doc = counters.find_one_and_update(
+        {"_id": f"inquiry_reference_{year}"},
+        {"$inc": {"seq": 1}},
+        upsert=True,
+        return_document=ReturnDocument.AFTER
+    )
+    return (doc["seq"] - 1) % 1000
+
+
+def make_reference_no(brand: str, seq: int) -> str:
+    """Build a human-readable reference like WIKA-260826#000 (BRAND-YYMMDD#XXX)."""
+    tag = re.sub(r'[^A-Za-z0-9]', '', (brand or '').split('/')[0].split(',')[0].strip())
+    tag = (tag or 'INQ').upper()[:12]
+    date_part = datetime.now(ZoneInfo("Asia/Jakarta")).strftime('%y%m%d')
+    return f"{tag}-{date_part}#{seq:03d}"
 # ◇───────────────────────────────────────────────────────────────◇
 
 
@@ -500,6 +528,7 @@ def contact():
 
         try:
             # 4) Save to Mongo
+            ticket_id = make_reference_no(brand, next_reference_sequence())
             base_payload = {
                 "name": name,
                 "position": position,
@@ -513,10 +542,10 @@ def contact():
                 "project_name": project_name,
                 "deadline": deadline,
                 "message": message,
+                "reference_no": ticket_id,
                 "inquiry_items": clean_items
             }
             res = contact_submissions.insert_one(base_payload)
-            ticket_id = str(res.inserted_id)
             submitted_on = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M %Z")
 
             # enrich payload for emails/PDF

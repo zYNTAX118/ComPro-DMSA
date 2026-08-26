@@ -17,5 +17,8 @@ try:
 
     # Get (or create) the collection for contact submissions.
     contact_submissions = db.contact_submissions
+
+    # Get (or create) the collection used for atomic reference-number counters.
+    counters = db.counters
 except Exception as e:
     raise RuntimeError(f"Failed to connect to MongoDB. Error: {e}")
