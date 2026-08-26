@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.privacy-wrap {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+  color: #1e293b;
+}
+
+.privacy-container {
+  max-width: 860px;
+  margin: 120px auto 60px;
+  padding: 40px 44px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+}
+
+.privacy-container h1 {
+  margin: 0 0 4px;
+  font-size: 30px;
+  color: #0f172a;
+}
+
+.privacy-updated {
+  color: #64748b;
+  font-size: 13px;
+  margin: 0 0 28px;
+}
+
+.privacy-container h2 {
+  font-size: 19px;
+  color: #0f172a;
+  margin: 32px 0 10px;
+  padding-top: 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.privacy-container h2:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.privacy-container p,
+.privacy-container li {
+  font-size: 15px;
+  color: #334155;
+}
+
+.privacy-container ul {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+
+.privacy-container li {
+  margin-bottom: 6px;
+}
+
+.privacy-container a {
+  color: #0d6efd;
+  text-decoration: none;
+}
+
+.privacy-container a:hover {
+  text-decoration: underline;
+}
+
+.privacy-contact-box {
+  margin-top: 10px;
+  padding: 16px 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+@media (max-width: 900px) {
+  .privacy-container {
+    margin: 110px 14px 40px;
+    padding: 26px 20px;
+  }
+}
+</style>
+
+<div class="privacy-wrap">
+  <div class="privacy-container">
+    <h1>Privacy Policy</h1>
+    <p class="privacy-updated">PT. Dwi Mandiri Sejahtera Agung &middot; Last updated: 26 August 2026</p>
+
+    <p>
+      This Privacy Policy explains how PT. Dwi Mandiri Sejahtera Agung ("PT. DMSA", "we", "us", "our")
+      collects, uses, stores, and protects information submitted through this website, including our
+      <a href="{{ url_for('contact') }}">Contact / Inquiry form</a> and our
+      <a href="{{ url_for('principals') }}">Principal / Manufacturer Partnership form</a>.
+    </p>
+
+    <h2>1. Information We Collect</h2>
+    <p>
+      We only collect <strong>business contact and inquiry information</strong> that you voluntarily submit
+      through our forms. We do not request or knowingly collect personal financial data, national ID numbers,
+      passwords, or other sensitive personal data.
+    </p>
+
+    <p><strong>Contact / Inquiry Form</strong></p>
+    <ul>
+      <li>Contact name</li>
+      <li>Position / department</li>
+      <li>Company name</li>
+      <li>Business email address</li>
+      <li>Phone / WhatsApp number</li>
+      <li>End user, plant, or site name (optional)</li>
+      <li>Inquiry details: requested brand/principal, product category, inquiry type, project/reference name, required delivery date, item specifications, and notes</li>
+      <li>File attachments (e.g., datasheets, drawings, purchase requisitions)</li>
+    </ul>
+
+    <p><strong>Principal / Manufacturer Partnership Form</strong></p>
+    <ul>
+      <li>Contact name, position, business email, phone number</li>
+      <li>Company name, country, company website</li>
+      <li>Product category and industries served</li>
+      <li>Partnership type and message</li>
+      <li>File attachments (e.g., company profile, product catalog)</li>
+    </ul>
+
+    <p><strong>Automatically Collected / Technical Data</strong></p>
+    <ul>
+      <li>IP address and a reCAPTCHA verification score, collected by Google reCAPTCHA v3 to prevent spam and automated abuse (see Section 5)</li>
+      <li>Draft form entries temporarily saved in your own browser's local storage so you don't lose progress if you navigate away — this data stays on your device and is not transmitted to us unless you submit the form</li>
+    </ul>
+
+    <h2>2. How We Use Your Information</h2>
+    <p>We use the information you submit to:</p>
+    <ul>
+      <li>Respond to your inquiry and prepare quotations or technical replies</li>
+      <li>Generate and send you a confirmation/quotation document</li>
+      <li>Evaluate partnership and distribution requests</li>
+      <li>Maintain records of business correspondence for order processing and after-sales support</li>
+      <li>Detect and prevent spam or fraudulent submissions</li>
+    </ul>
+    <p>
+      We do not use your information for advertising, profiling, or automated decision-making, and we do not
+      sell your information.
+    </p>
+
+    <h2>3. How We Store Your Information</h2>
+    <p>
+      Submitted form data is stored in our secured database and is also sent by email to our internal
+      sales/admin team. Uploaded attachments are transmitted as part of that internal email and are not
+      published or made publicly accessible.
+    </p>
+
+    <h2>4. Who We Share Your Information With</h2>
+    <p>We do not sell or rent your information. We share it only with:</p>
+    <ul>
+      <li><strong>Internal PT. DMSA staff</strong> who need it to process your inquiry or partnership request</li>
+      <li><strong>Google reCAPTCHA</strong> (Google LLC), which receives your IP address and interaction signals to verify you are not a bot. See <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a></li>
+      <li><strong>Email service providers</strong> (Gmail/Google Workspace, or our SMTP provider as a fallback) used solely to deliver your inquiry and our reply</li>
+      <li>Third parties, when required by law or to protect our legal rights</li>
+    </ul>
+
+    <h2>5. Cookies and Local Storage</h2>
+    <p>
+      This site uses your browser's local storage to temporarily save your form inputs as a draft so you
+      don't lose them if you leave the page. This data is stored only on your device, is never transmitted to
+      our servers unless you submit the form, and is cleared automatically after successful submission. We do
+      not use third-party advertising or tracking cookies. Google reCAPTCHA may set its own cookies as part of
+      its bot-detection service.
+    </p>
+
+    <h2>6. Data Retention</h2>
+    <p>
+      We retain inquiry and partnership submissions for as long as necessary to respond to your request,
+      fulfill any resulting business relationship, and comply with our recordkeeping and legal obligations.
+      You may request earlier deletion as described in Section 7.
+    </p>
+
+    <h2>7. Your Rights</h2>
+    <p>You may contact us to:</p>
+    <ul>
+      <li>Request a copy of the information we hold about you</li>
+      <li>Correct inaccurate information</li>
+      <li>Request deletion of your submission, subject to legitimate business or legal recordkeeping needs</li>
+    </ul>
+    <p>To exercise these rights, reach out to us via our <a href="{{ url_for('contact') }}">Contact page</a>.</p>
+
+    <h2>8. Security</h2>
+    <p>
+      We take reasonable technical and organizational measures to protect the information you submit,
+      including encrypted (TLS) database connections and reCAPTCHA-based abuse prevention. However, no method
+      of transmission or storage is 100% secure, and we cannot guarantee absolute security.
+    </p>
+
+    <h2>9. Changes to This Policy</h2>
+    <p>
+      We may update this Privacy Policy from time to time. The "Last updated" date at the top of this page
+      reflects the most recent revision.
+    </p>
+  </div>
+</div>
+
+{% endblock %}

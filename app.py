@@ -395,6 +395,11 @@ def products():
     return render_template('products.html')
 
 
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+
 # ───────────────────────────  Routes  ──────────────────────────
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -650,27 +655,27 @@ def principals():
 
         body = f"""New Partnership Request
 
-Company: {company}
-Country: {country}
-Website: {website}
-
-Contact Person:
-Name: {name}
-Position: {position}
-Email: {email}
-Phone: {phone}
-
-Business Information:
-Main Product Category: {product_category}
-Industries Served: {industries}
-Partnership Type: {partnership_type}
-
-Additional Information:
-{message or "-"}
-
-Uploaded Files:
-{chr(10).join('- ' + f for f in filenames) if filenames else '- None'}
-"""
+            Company: {company}
+            Country: {country}
+            Website: {website}
+            
+            Contact Person:
+            Name: {name}
+            Position: {position}
+            Email: {email}
+            Phone: {phone}
+            
+            Business Information:
+            Main Product Category: {product_category}
+            Industries Served: {industries}
+            Partnership Type: {partnership_type}
+            
+            Additional Information:
+            {message or "-"}
+            
+            Uploaded Files:
+            {chr(10).join('- ' + f for f in filenames) if filenames else '- None'}
+            """
 
         try:
             send_email(
