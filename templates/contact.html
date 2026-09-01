@@ -347,6 +347,7 @@ grecaptcha.ready(function () {
 
   <form id="contact-form" method="POST" action="{{ url_for('contact') }}" enctype="multipart/form-data" class="contact-form">
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <input type="hidden" id="inquiry_items_json" name="inquiry_items_json">
 
     <div class="form-section">

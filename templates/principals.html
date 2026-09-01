@@ -263,6 +263,7 @@ grecaptcha.ready(function () {
 
   <form id="principals-form" method="POST" action="{{ url_for('principals') }}" enctype="multipart/form-data" class="contact-form">
     <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
     <div class="form-section">
       <h3>1. Company Information</h3>

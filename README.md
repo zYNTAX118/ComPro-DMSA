@@ -58,6 +58,12 @@ while using standard HTML and CSS for the front end.
     - Implementing user input in contacts to give notifications through emails(added)
     - Simple SQL database to store inquiries
 ---
+## Testing
+```bash
+pip install -r requirements-dev.txt
+pytest tests/
+```
+---
 ## Contributing
 Currently, this repository is for demonstration purposes only. We are **not** accepting external contributions.
 

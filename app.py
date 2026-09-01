@@ -1,5 +1,5 @@
-import os, re, logging, base64, json, concurrent.futures, smtplib, requests   # ← add requests
-from flask import Flask, request, render_template, flash, redirect, url_for, abort
+import os, re, hmac, secrets, logging, base64, json, concurrent.futures, smtplib, requests
+from flask import Flask, request, render_template, flash, redirect, url_for, abort, session
 from googleapiclient.discovery import build
 from pymongo import ReturnDocument
 from google.oauth2.credentials import Credentials
@@ -9,21 +9,29 @@ from dotenv import load_dotenv
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
-from datetime import datetime
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from io import BytesIO
+from werkzeug.exceptions import RequestEntityTooLarge
 load_dotenv()
-from database import contact_submissions, counters                       # ← your Mongo collections
+from database import contact_submissions, partnership_submissions, counters   # ← your Mongo collections
 
 
 # ────────────────────────── Flask + config ─────────────────────────────
 app = Flask(__name__)
+
+# Vercel sets VERCEL=1 in its build/runtime environment; absence of it means
+# we're running locally over plain HTTP, where a Secure cookie would never
+# be sent back by the browser (breaking sessions/CSRF in local dev).
+IS_DEPLOYED = bool(os.getenv('VERCEL'))
+
 app.config.update(
     DEBUG=False,
     SECRET_KEY=os.environ.get('SECRET_KEY', os.urandom(32)),
-    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SECURE=IS_DEPLOYED,
     SESSION_COOKIE_HTTPONLY=True,
-    SESSION_COOKIE_SAMESITE='Lax'
+    SESSION_COOKIE_SAMESITE='Lax',
+    MAX_CONTENT_LENGTH=25 * 1024 * 1024,   # 25MB hard cap per request (all attachments combined)
 )
 logging.basicConfig(level=logging.INFO)
 
@@ -35,6 +43,10 @@ RECAPTCHA_THRESHOLD     = float(os.getenv("RECAPTCHA_THRESHOLD", 0.5))   # feel 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
 gmail_service = None
+
+ALLOWED_ATTACHMENT_EXTENSIONS = {'.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.txt', '.xls', '.xlsx'}
+MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024   # 10MB per individual file
+EMAIL_RE = re.compile(r'^[^\s@"<>]+@[^\s@"<>]+\.[^\s@"<>]+$')
 # ───────────────────────────────────────────────────────────────────────
 
 
@@ -55,6 +67,72 @@ def verify_recaptcha(token: str, remote_ip: str | None = None) -> dict:
     if r.status_code != 200:
         raise ValueError(f"reCAPTCHA HTTP {r.status_code}")
     return r.json()
+# ◇───────────────────────────────────────────────────────────────◇
+
+
+# ◇──────────────────────  CSRF protection  ────────────────────◇
+def get_csrf_token() -> str:
+    token = session.get('csrf_token')
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session['csrf_token'] = token
+    return token
+
+
+def csrf_valid() -> bool:
+    expected = session.get('csrf_token', '')
+    submitted = request.form.get('csrf_token', '')
+    return bool(expected) and hmac.compare_digest(expected, submitted)
+
+
+app.jinja_env.globals['csrf_token'] = get_csrf_token
+# ◇───────────────────────────────────────────────────────────────◇
+
+
+def reject(msg: str, status: int, endpoint: str):
+    """Shared error response: JSON for XHR submits, flash+redirect otherwise."""
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return {"ok": False, "message": msg}, status
+    flash(msg, "error")
+    return redirect(url_for(endpoint))
+
+
+# ◇──────────────────  Input validation helpers  ────────────────◇
+def is_valid_email(value: str) -> bool:
+    return bool(value) and len(value) <= 254 and bool(EMAIL_RE.match(value))
+
+
+def sanitize_filename(name: str) -> str:
+    """Strip path components and header-breaking characters before the name
+    is ever placed inside an email Content-Disposition header."""
+    name = os.path.basename(name or "attachment")
+    name = re.sub(r'[\r\n"]', '', name).strip()
+    return name[:200] or "attachment"
+
+
+def collect_attachments(files, field_name="attachments"):
+    """
+    Read + validate uploaded files against an extension allowlist and a
+    per-file size cap. Returns (uploaded_files, filenames, error_message).
+    On error_message being non-None, the caller should reject the whole
+    submission rather than silently dropping the bad file.
+    """
+    uploaded, filenames = [], []
+    for fs in files.getlist(field_name):
+        if not fs or not fs.filename:
+            continue
+        safe_name = sanitize_filename(fs.filename)
+        ext = os.path.splitext(safe_name)[1].lower()
+        if ext not in ALLOWED_ATTACHMENT_EXTENSIONS:
+            return [], [], f"File type not allowed: {safe_name}"
+        data = fs.read()
+        if not data:
+            continue
+        if len(data) > MAX_ATTACHMENT_SIZE:
+            return [], [], f"File too large (max {MAX_ATTACHMENT_SIZE // (1024*1024)}MB): {safe_name}"
+        uploaded.append({"filename": safe_name, "data": data, "mimetype": fs.mimetype or "application/octet-stream"})
+        filenames.append(safe_name)
+    return uploaded, filenames, None
 # ◇───────────────────────────────────────────────────────────────◇
 
 
@@ -407,6 +485,15 @@ def format_inquiry_text(data: dict, message: str, filenames: list[str] | None = 
 
     return "\n".join(lines)
 
+@app.errorhandler(RequestEntityTooLarge)
+def handle_large_upload(e):
+    msg = "Upload too large. Please keep total attachments under 25MB."
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return {"ok": False, "message": msg}, 413
+    flash(msg, "error")
+    return redirect(request.referrer or url_for('home'))
+
+
 # ───────────────────────────  Routes  ──────────────────────────
 @app.route('/')
 def home():
@@ -432,33 +519,25 @@ def privacy():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        # 1) reCAPTCHA verification
+        # 1) CSRF check
+        if not csrf_valid():
+            return reject("Your session expired. Please refresh the page and try again.", 400, 'contact')
+
+        # 2) reCAPTCHA verification
         token = request.form.get("g-recaptcha-response")
         if not token:
-            msg = "reCAPTCHA token missing – please retry."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 400
-            flash(msg, "error")
-            return redirect(url_for('contact'))
+            return reject("reCAPTCHA token missing – please retry.", 400, 'contact')
 
         try:
             rc = verify_recaptcha(token, request.remote_addr)
             if not rc.get("success") or rc.get("score", 0) < RECAPTCHA_THRESHOLD or rc.get("action") != "contact":
                 logging.warning(f"reCAPTCHA failure: {rc}")
-                msg = "reCAPTCHA verification failed. Please try again."
-                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return {"ok": False, "message": msg}, 400
-                flash(msg, "error")
-                return redirect(url_for('contact'))
+                return reject("reCAPTCHA verification failed. Please try again.", 400, 'contact')
         except Exception:
             logging.exception("reCAPTCHA request error")
-            msg = "Unable to verify reCAPTCHA. Please try later."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 500
-            flash(msg, "error")
-            return redirect(url_for('contact'))
+            return reject("Unable to verify reCAPTCHA. Please try later.", 500, 'contact')
 
-        # 2) Grab form fields
+        # 3) Grab form fields
         name = request.form.get('name', '').strip()
         position = request.form.get('position', '').strip()
         email = request.form.get('email', '').strip()
@@ -495,39 +574,29 @@ def contact():
                 clean_items.append(row)
 
         if not (name and email and company):
-            msg = "Name, Company, and Email are required."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 400
-            flash(msg, "error")
-            return redirect(url_for('contact'))
+            return reject("Name, Company, and Email are required.", 400, 'contact')
+
+        if not is_valid_email(email):
+            return reject("Please provide a valid email address.", 400, 'contact')
 
         if not clean_items:
-            msg = "Please provide at least one inquiry item."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 400
-            flash(msg, "error")
-            return redirect(url_for('contact'))
+            return reject("Please provide at least one inquiry item.", 400, 'contact')
 
-        # 3) Files: support both multi 'attachments' and legacy single 'attachment'
-        uploaded_files = []
-        filenames = []
-        # Multi
-        for fs in request.files.getlist("attachments"):
-            if fs and fs.filename:
-                data = fs.read()
-                if data:
-                    uploaded_files.append({"filename": fs.filename, "data": data, "mimetype": fs.mimetype or "application/octet-stream"})
-                    filenames.append(fs.filename)
-        # Single (legacy)
-        single = request.files.get("attachment")
-        if single and single.filename:
-            data = single.read()
-            if data:
-                uploaded_files.append({"filename": single.filename, "data": data, "mimetype": single.mimetype or "application/octet-stream"})
-                filenames.append(single.filename)
+        # 4) Files: support both multi 'attachments' and legacy single 'attachment'
+        uploaded_files, filenames, file_error = collect_attachments(request.files, "attachments")
+        if file_error:
+            return reject(file_error, 400, 'contact')
 
+        if request.files.get("attachment"):
+            single_files, single_names, single_error = collect_attachments(request.files, "attachment")
+            if single_error:
+                return reject(single_error, 400, 'contact')
+            uploaded_files += single_files
+            filenames += single_names
+
+        # 5) Save to Mongo — this is the critical step; if it fails, nothing
+        # was recorded so it's safe to tell the user to retry.
         try:
-            # 4) Save to Mongo
             ticket_id = make_reference_no(brand, next_reference_sequence())
             base_payload = {
                 "name": name,
@@ -543,33 +612,38 @@ def contact():
                 "deadline": deadline,
                 "message": message,
                 "reference_no": ticket_id,
-                "inquiry_items": clean_items
+                "inquiry_items": clean_items,
+                "created_at": datetime.now(timezone.utc),
             }
-            res = contact_submissions.insert_one(base_payload)
-            submitted_on = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M %Z")
+            contact_submissions.insert_one(base_payload)
+        except Exception:
+            logging.exception("Failed to save inquiry to database")
+            return reject("Unexpected error – please try again later.", 500, 'contact')
 
-            # enrich payload for emails/PDF
-            payload = dict(base_payload)
-            payload["ticket_id"] = ticket_id
-            payload["submitted_on"] = submitted_on
+        # From here on the inquiry is safely stored even if email delivery
+        # below fails — so a failure here must NOT show the user an error
+        # (that would just invite a duplicate resubmission).
+        submitted_on = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%Y-%m-%d %H:%M %Z")
+        payload = dict(base_payload)
+        payload["ticket_id"] = ticket_id
+        payload["submitted_on"] = submitted_on
 
-            # 5) Build PDF (always try; fallback ensures bytes or empty)
-            logo = os.path.join(app.root_path, "static", "images", "logo.png")
-            pdf_bytes = build_inquiry_pdf(payload, message, logo_path=logo)
-            pdf_attachment = [{
-                "filename": f"inquiry_{ticket_id}.pdf",
-                "data": pdf_bytes,
-                "mimetype": "application/pdf"
-            }] if pdf_bytes else []
+        logo = os.path.join(app.root_path, "static", "images", "logo.png")
+        pdf_bytes = build_inquiry_pdf(payload, message, logo_path=logo)
+        pdf_attachment = [{
+            "filename": f"inquiry_{ticket_id}.pdf",
+            "data": pdf_bytes,
+            "mimetype": "application/pdf"
+        }] if pdf_bytes else []
 
-            # 6) Build text bodies (details mirror the PDF)
-            details_text = format_inquiry_text(payload, message, filenames=filenames)
+        details_text = format_inquiry_text(payload, message, filenames=filenames)
 
-            # 7) Emails
-            admin_subject = f"[DMSA] New Inquiry — Ref #{ticket_id}"
-            user_subject  = f"Your Inquiry Received — Ref #{ticket_id}"
+        admin_subject = f"[DMSA] New Inquiry — Ref #{ticket_id}"
+        user_subject  = f"Your Inquiry Received — Ref #{ticket_id}"
 
-            # Admins: include user uploads + PDF
+        email_failed = False
+
+        try:
             admin_attachments = uploaded_files + pdf_attachment
             send_email(
                 ADMIN_EMAILS,
@@ -577,8 +651,11 @@ def contact():
                 details_text,
                 attachments=admin_attachments if admin_attachments else None
             )
+        except Exception:
+            logging.exception(f"Failed to send admin notification for {ticket_id}")
+            email_failed = True
 
-            # Customer: include only the PDF (not the big uploads)
+        try:
             send_email(
                 email,
                 user_subject,
@@ -590,20 +667,17 @@ def contact():
                 ),
                 attachments=pdf_attachment if pdf_attachment else None
             )
-
-
-            msg = "Your request was sent successfully. Thank you!"
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": True, "message": msg}, 200
-            flash(msg, "success")
-
         except Exception:
-            logging.exception("Error in /contact handler")
-            msg = "Unexpected error – please try again later."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 500
-            flash(msg, "error")
+            logging.exception(f"Failed to send confirmation email for {ticket_id}")
+            email_failed = True
 
+        msg = f"Your request was sent successfully. Reference No: {ticket_id}"
+        if email_failed:
+            msg = f"Your inquiry was received and saved (Ref #{ticket_id}). We had trouble sending the confirmation email, but our team already has it."
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return {"ok": True, "message": msg, "reference_no": ticket_id}, 200
+        flash(msg, "success")
         return redirect(url_for('contact'))
 
     # GET
@@ -613,30 +687,21 @@ def contact():
 @app.route('/principals', methods=['GET', 'POST'])
 def principals():
     if request.method == 'POST':
+        if not csrf_valid():
+            return reject("Your session expired. Please refresh the page and try again.", 400, 'principals')
+
         token = request.form.get("g-recaptcha-response")
         if not token:
-            msg = "reCAPTCHA token missing – please retry."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 400
-            flash(msg, "error")
-            return redirect(url_for('principals'))
+            return reject("reCAPTCHA token missing – please retry.", 400, 'principals')
 
         try:
             rc = verify_recaptcha(token, request.remote_addr)
             if not rc.get("success") or rc.get("score", 0) < RECAPTCHA_THRESHOLD or rc.get("action") != "principals":
                 logging.warning(f"reCAPTCHA failure on principals page: {rc}")
-                msg = "reCAPTCHA verification failed. Please try again."
-                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                    return {"ok": False, "message": msg}, 400
-                flash(msg, "error")
-                return redirect(url_for('principals'))
+                return reject("reCAPTCHA verification failed. Please try again.", 400, 'principals')
         except Exception:
             logging.exception("reCAPTCHA request error on principals page")
-            msg = "Unable to verify reCAPTCHA. Please try later."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 500
-            flash(msg, "error")
-            return redirect(url_for('principals'))
+            return reject("Unable to verify reCAPTCHA. Please try later.", 500, 'principals')
 
         name = request.form.get('name', '').strip()
         position = request.form.get('position', '').strip()
@@ -653,32 +718,40 @@ def principals():
         message = request.form.get('message', '').strip()
 
         if not (name and email and company and country and partnership_type):
-            msg = "Please fill the required fields."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 400
-            flash(msg, "error")
-            return redirect(url_for('principals'))
+            return reject("Please fill the required fields.", 400, 'principals')
+
+        if not is_valid_email(email):
+            return reject("Please provide a valid email address.", 400, 'principals')
 
         if partnership_type != "principal_manufacturer":
-            msg = "Only principal / manufacturer partnership requests are accepted."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 400
-            flash(msg, "error")
-            return redirect(url_for('principals'))
+            return reject("Only principal / manufacturer partnership requests are accepted.", 400, 'principals')
 
-        uploaded_files = []
-        filenames = []
+        uploaded_files, filenames, file_error = collect_attachments(request.files, "attachments")
+        if file_error:
+            return reject(file_error, 400, 'principals')
 
-        for fs in request.files.getlist("attachments"):
-            if fs and fs.filename:
-                data = fs.read()
-                if data:
-                    uploaded_files.append({
-                        "filename": fs.filename,
-                        "data": data,
-                        "mimetype": fs.mimetype or "application/octet-stream"
-                    })
-                    filenames.append(fs.filename)
+        # Save to Mongo first — this is the record of the request even if
+        # the email below never arrives.
+        try:
+            base_payload = {
+                "name": name,
+                "position": position,
+                "email": email,
+                "phone": phone,
+                "company": company,
+                "country": country,
+                "website": website,
+                "product_category": product_category,
+                "industries": industries,
+                "partnership_type": partnership_type,
+                "message": message,
+                "attachment_filenames": filenames,
+                "created_at": datetime.now(timezone.utc),
+            }
+            partnership_submissions.insert_one(base_payload)
+        except Exception:
+            logging.exception("Failed to save partnership request to database")
+            return reject("Unexpected error – please try again later.", 500, 'principals')
 
         subject = "[DMSA] New Principal / Manufacturer Partnership Request"
 
@@ -687,25 +760,26 @@ def principals():
             Company: {company}
             Country: {country}
             Website: {website}
-            
+
             Contact Person:
             Name: {name}
             Position: {position}
             Email: {email}
             Phone: {phone}
-            
+
             Business Information:
             Main Product Category: {product_category}
             Industries Served: {industries}
             Partnership Type: {partnership_type}
-            
+
             Additional Information:
             {message or "-"}
-            
+
             Uploaded Files:
             {chr(10).join('- ' + f for f in filenames) if filenames else '- None'}
             """
 
+        msg = "Your partnership request was sent successfully. Thank you!"
         try:
             send_email(
                 ADMIN_EMAILS,
@@ -713,19 +787,13 @@ def principals():
                 body,
                 attachments=uploaded_files if uploaded_files else None
             )
-
-            msg = "Your partnership request was sent successfully. Thank you!"
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": True, "message": msg}, 200
-            flash(msg, "success")
-
         except Exception:
-            logging.exception("Error in /principals handler")
-            msg = "Unexpected error – please try again later."
-            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-                return {"ok": False, "message": msg}, 500
-            flash(msg, "error")
+            logging.exception("Failed to send partnership notification email")
+            msg = "Your partnership request was received and saved. We had trouble sending the notification email, but our team already has it."
 
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return {"ok": True, "message": msg}, 200
+        flash(msg, "success")
         return redirect(url_for('principals'))
 
     return render_template('principals.html', site_key=RECAPTCHA_SITE_KEY)
